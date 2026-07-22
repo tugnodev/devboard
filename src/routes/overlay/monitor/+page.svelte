@@ -1,0 +1,34 @@
+<script lang="ts">
+    import Page from "$lib/components/reusable/Page.svelte";
+    import Container from "$lib/components/reusable/Container.svelte";
+    import MainCpuMonitor from "$lib/components/overlay/chart/MainCpuMonitor.svelte";
+    import MemoryChart from "$lib/components/overlay/chart/MemoryChart.svelte";
+    import NetworkChart from "$lib/components/overlay/chart/NetworkChart.svelte";
+    import DisksArc from "$lib/components/overlay/chart/DisksArc.svelte";
+    import { onMount } from "svelte";
+    import { cpuState } from '$lib/states/device';
+    import Pagination from "$lib/components/overlay/Pagination.svelte";
+</script>
+<Page>
+    <main class="h-full flex flex-col gap-2">
+        <div class="grid grid-cols-4 gap-2 w-full h-fit">
+            <Container class="p-4 aspect-video">
+                <MainCpuMonitor />
+            </Container>
+            <Container class="p-4 aspect-video">
+                <MemoryChart />
+            </Container>
+            <Container class="p-4 aspect-video">
+                <NetworkChart />
+            </Container>
+            <Container class="p-4 aspect-video">
+                <DisksArc />
+            </Container>
+        </div>
+        <div class="grid grid-cols-1 grid-rows-1 bg-accent overflow-hidden rounded">
+            <Container class="w-full h-full overflow-hidden p-4">
+                <Pagination />
+            </Container>
+        </div>
+    </main>
+</Page>

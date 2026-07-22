@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+:root {
+    background-color: transparent;
+}
+
 @layer utilities {
     .no-scrollbar {
         scrollbar-width: none;
