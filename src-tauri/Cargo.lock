@@ -692,6 +692,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "devboard"
+version = "0.1.0"
+dependencies = [
+ "netdev",
+ "raw-cpuid",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-opener",
+ "tokio",
+]
+
+[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3689,22 +3705,6 @@ dependencies = [
  "webview2-com",
  "windows 0.61.3",
  "wry",
-]
-
-[[package]]
-name = "tauri-svelte-template"
-version = "0.1.0"
-dependencies = [
- "netdev",
- "raw-cpuid",
- "serde",
- "serde_json",
- "sysinfo",
- "tauri",
- "tauri-build",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-opener",
- "tokio",
 ]
 
 [[package]]

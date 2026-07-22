@@ -1,7 +1,7 @@
 {
-  "name": "tauri-svelte-template",
+  "name": "devboard",
   "version": "0.1.0",
-  "description": "",
+  "description": "A tauri app",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
