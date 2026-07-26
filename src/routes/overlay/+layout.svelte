@@ -6,17 +6,10 @@
     import { onMount } from "svelte";
     let { children } = $props();
     import { initTauriBridge } from "$lib/services/bridge";
-    import { invoke } from "@tauri-apps/api/core";
-    import type { cpuInfos } from "$lib/dtos/device";
-    import { cpuInfosState } from "$lib/states/device";
 
 
-    async () => {
-
-    }
-
-    onMount(async () => {
-      await initTauriBridge();
+    onMount(() => {
+      initTauriBridge();
     });
 </script>
 

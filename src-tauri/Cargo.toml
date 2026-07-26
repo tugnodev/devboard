@@ -26,6 +26,7 @@ tokio = { version = "1", features = ["full"] }
 sysinfo = "0.39.6"
 raw-cpuid = "11.6.0"
 netdev = "0.45.0"
+tauri-plugin-store = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-global-shortcut = "2"

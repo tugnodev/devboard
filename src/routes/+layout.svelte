@@ -1,12 +1,7 @@
 <script>
-    import { onMount } from "svelte";
     let { children } = $props();
     import "../app.css";
 
-    import { invoke } from "@tauri-apps/api/core";
-    onMount(async () => {
-
-    });
 </script>
 
 <main

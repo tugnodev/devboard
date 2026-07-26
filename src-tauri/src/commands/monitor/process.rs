@@ -10,6 +10,15 @@ pub async fn realtime_process_infos(app: AppHandle) {
     tokio::task::spawn(async move {
         let mut sys = System::new_all();
         loop {
+            if !app
+                .state::<Mutex<AppState>>()
+                .lock()
+                .unwrap()
+                .overlay_visible
+            {
+                break;
+            }
+
             sys.refresh_processes(ProcessesToUpdate::All, true);
             let processes: Vec<Process> = sys
                 .processes()
@@ -35,20 +44,13 @@ pub async fn realtime_process_infos(app: AppHandle) {
             if let Err(e) = app.emit::<EmitResponse<Vec<Process>>>(
                 "state-bridge",
                 EmitResponse {
-                    state_name: "process".to_string(),
+                    state_name: "processes".to_string(),
                     data: processes,
                 },
             ) {
-                eprintln!("Error while sending process data: {}", e);
+                eprintln!("Erreur lors de l'émission des données : {:?}", e)
             }
-            if !app
-                .state::<Mutex<AppState>>()
-                .lock()
-                .unwrap()
-                .overlay_visible
-            {
-                break;
-            }
+
             tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
         }
     });

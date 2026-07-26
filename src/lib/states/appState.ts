@@ -5,6 +5,7 @@ import { cpuInfosState } from './device';
 
 export type AppState = {
   overlayVisible: boolean;
+
 	interval: number; //milliseconds
 };
 
@@ -12,10 +13,10 @@ export const appState = writable<AppState>({ overlayVisible: false, interval: 10
 appState.subscribe(async (state) => {
   switch (state.overlayVisible) {
     case true:
-    invoke("realtime_cpu_infos");
-    invoke("realtime_memory_infos");
-    invoke("realtime_network_stats");
-    invoke("realtime_process_infos");
+      invoke("realtime_cpu_infos");
+      invoke("realtime_memory_infos");
+      invoke("realtime_network_stats");
+      invoke("realtime_process_infos");
     const data = await invoke<cpuInfos>("get_cpu_infos");
     cpuInfosState.set(data);
       break;

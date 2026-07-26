@@ -5,12 +5,11 @@
     import MemoryChart from "$lib/components/overlay/chart/MemoryChart.svelte";
     import NetworkChart from "$lib/components/overlay/chart/NetworkChart.svelte";
     import DisksArc from "$lib/components/overlay/chart/DisksArc.svelte";
-    import { onMount } from "svelte";
-    import { cpuState } from '$lib/states/device';
     import Pagination from "$lib/components/overlay/Pagination.svelte";
 </script>
 <Page>
     <main class="h-full flex flex-col gap-2">
+
         <div class="grid grid-cols-4 gap-2 w-full h-fit">
             <Container class="p-4 aspect-video">
                 <MainCpuMonitor />
@@ -25,7 +24,7 @@
                 <DisksArc />
             </Container>
         </div>
-        <div class="grid grid-cols-1 grid-rows-1 bg-accent overflow-hidden rounded">
+        <div class="grid grid-cols-1 grid-rows-1 bg-accent overflow-hidden rounded flex-1 min-h-0">
             <Container class="w-full h-full overflow-hidden p-4">
                 <Pagination />
             </Container>

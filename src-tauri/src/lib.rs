@@ -19,6 +19,7 @@ use crate::types::AppState;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .manage(Mutex::new(AppState {
             overlay_visible: false,
             interval: 1000,
@@ -135,7 +136,7 @@ pub fn run() {
                         // 4. Gestion des clics sur les éléments du menu
                         match event.id.as_ref() {
                             "open" => {
-                                let webview = app_handle.get_webview_window("main");
+                                let webview = app_handle.get_webview_window("overlay");
                                 match webview {
                                     Some(webview) => {
                                         webview.show().unwrap();

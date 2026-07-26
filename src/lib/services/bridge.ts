@@ -8,7 +8,7 @@ export enum StateName {
   cpu = 'cpu',
   memory = 'memory',
   network = 'network',
-  process = "process"
+  process = "processes"
 }
 
 export type StatePayloads = {
@@ -49,14 +49,14 @@ export async function initTauriBridge() {
       case StateName.process: {
         const data = payload.data as Process[];
         processState.set(data);
-        console.log(data);
+        console.log(`taille des processus ${data.length}`)
         break
       }
       case StateName.network: {
         const data = payload.data as NetworkStats;
         networkStats.subscribe((stats) => {
-          stats.send = data.bytesSent;
-          stats.receive = data.bytesReceived;
+          stats.send = data.bytesSent / Math.pow(1000, 1);
+          stats.receive = data.bytesReceived / Math.pow(1000, 1);
           stats.time = new Date(data.timestamp.secs_since_epoch * 1000);
         });
       }
