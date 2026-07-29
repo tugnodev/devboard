@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { bounceOut } from "svelte/easing";
+    import { bounceOut, elasticIn, elasticOut, backIn, backOut } from "svelte/easing";
     import { appState } from "$lib/states/appState";
     import TopBar from "$lib/components/overlay/TopBar.svelte";
     import { onMount } from "svelte";
@@ -23,19 +23,19 @@
         }
     }}
     onclick={() => $appState.overlayVisible = false}
-    class="w-full h-screen p-4">
+    class="w-full h-screen">
     {#if $appState.overlayVisible}
-    <section class="flex flex-col gap-2 h-full w-full overflow-hidden">
+    <section class="flex flex-col h-full gap-2 p-4 w-full overflow-hidden">
         <header
-            in:fly={{ y: -100, duration: 300, easing: bounceOut, delay: 5 }}
-            out:fly={{ y: -100, duration: 300, delay: 0 }}
-            class="w-full h-24 flex items-center justify-center">
+            in:fly={{ y: -100, duration: 300, easing: backIn, delay: 50 }}
+            out:fly={{ y: -100, duration: 300, delay: 0, easing: backOut }}
+            class="w-full flex items-center justify-center">
                 <TopBar />
         </header>
         <section
-            in:fly={{ duration: 300, y: 700 }}
-            out:fly={{ y: 700, duration: 300, delay: 0 }}
-            class="flex justify-between h-full w-full">
+            in:fly={{ duration: 300, y: 1000, easing: backIn, delay: 50 }}
+            out:fly={{ y: 1000, duration: 300, easing: backOut }}
+            class="flex h-full w-full">
             {@render children()}
         </section>
     </section>

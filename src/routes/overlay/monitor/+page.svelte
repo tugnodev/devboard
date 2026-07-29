@@ -8,9 +8,8 @@
     import Pagination from "$lib/components/overlay/Pagination.svelte";
 </script>
 <Page>
-    <main class="h-full flex flex-col gap-2">
-
-        <div class="grid grid-cols-4 gap-2 w-full h-fit">
+    <main class="h-full max-h-screen overflow-auto flex flex-col gap-2">
+        <div class="grid grid-cols-4 gap-2 w-full">
             <Container class="p-4 aspect-video">
                 <MainCpuMonitor />
             </Container>
@@ -24,7 +23,7 @@
                 <DisksArc />
             </Container>
         </div>
-        <div class="grid grid-cols-1 grid-rows-1 bg-accent overflow-hidden rounded flex-1 min-h-0">
+        <div class="grid grid-cols-1 h-full grid-rows-1 overflow-hidden rounded flex-1">
             <Container class="w-full h-full overflow-hidden p-4">
                 <Pagination />
             </Container>

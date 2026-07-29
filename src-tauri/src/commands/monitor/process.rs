@@ -20,7 +20,7 @@ pub async fn realtime_process_infos(app: AppHandle) {
             }
 
             sys.refresh_processes(ProcessesToUpdate::All, true);
-            let processes: Vec<Process> = sys
+            let mut processes: Vec<Process> = sys
                 .processes()
                 .iter()
                 .map(|(_pid, process)| Process {
@@ -40,6 +40,9 @@ pub async fn realtime_process_infos(app: AppHandle) {
                     run_time: process.run_time(),
                 })
                 .collect();
+
+            processes.sort_by_key(|p| p.cpu_usage as u32);
+            processes.reverse();
 
             if let Err(e) = app.emit::<EmitResponse<Vec<Process>>>(
                 "state-bridge",

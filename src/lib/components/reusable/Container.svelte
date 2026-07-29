@@ -15,6 +15,6 @@ import { cn } from "$lib/utils/cn";
     onclick={(e) => {
         e.stopPropagation();
     }}
-    class={`bg-base-100 border border-base-300 rounded ${cn(className)}`}>
+    class={`${cn(`bg-base-100 border border-base-300 rounded`, className)}`}>
         {@render children()}
 </div>

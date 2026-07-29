@@ -5,7 +5,7 @@
 </script>
 
 <main
-    class="w-full h-screen no-scrollbar flex flex-col items-center justify-start overflow-hidden"
+    class="w-full h-screen no-scrollbar overflow-hidden"
 >
     {@render children()}
 </main>

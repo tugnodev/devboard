@@ -2,7 +2,7 @@ use std::{sync::Mutex, time::SystemTime};
 
 use netdev::{self};
 use serde::{Deserialize, Serialize};
-use sysinfo::Networks;
+use sysinfo::{NetworkData, Networks};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::types::{AppState, EmitResponse};
@@ -22,8 +22,18 @@ pub async fn realtime_network_stats(app: AppHandle) {
 
         loop {
             net.refresh(true);
-            let interface_name = netdev::get_default_interface().unwrap().name;
-            let interface = net.list().get_key_value(&interface_name).unwrap();
+
+            let interface: (&String, &NetworkData);
+            match netdev::get_default_interface() {
+                Ok(default) => {
+                    interface = net.list().get_key_value(&default.name).unwrap();
+                }
+
+                Err(e) => {
+                    println!("{:?}", e);
+                    break;
+                }
+            };
 
             let stats = NetworkStats {
                 bytes_received: interface.1.received(),

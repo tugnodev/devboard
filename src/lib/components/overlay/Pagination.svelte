@@ -21,7 +21,7 @@
             {/each}
         </div>
         {#each pages as page}
-            <div class="tab-content border-base-300 pb-32 rounded flex-1 min-h-0 {activePage === page.label ? 'block' : 'hidden'}">
+            <div class="tab-content border-base-300 rounded flex-1 min-h-0 {activePage === page.label ? 'block' : 'hidden'}">
                 <page.content />
             </div>
         {/each}
