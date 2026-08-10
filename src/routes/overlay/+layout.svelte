@@ -23,9 +23,9 @@
         }
     }}
     onclick={() => $appState.overlayVisible = false}
-    class="w-full h-screen">
+    class="w-full h-screen max-h-screen">
     {#if $appState.overlayVisible}
-    <section class="flex flex-col h-full gap-2 p-4 w-full overflow-hidden">
+    <section class="flex flex-col h-full gap-2 p-2 w-full overflow-hidden">
         <header
             in:fly={{ y: -100, duration: 300, easing: backIn, delay: 50 }}
             out:fly={{ y: -100, duration: 300, delay: 0, easing: backOut }}
@@ -40,6 +40,7 @@
         </section>
     </section>
     {:else}
-    <div class="w-full h-screen "></div>
+    <div class="w-full h-screen">
+    </div>
     {/if}
 </div>

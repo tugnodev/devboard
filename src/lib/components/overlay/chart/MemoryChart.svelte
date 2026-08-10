@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="flex flex-col w-full h-full aspect-video">
+<div class="p-4 aspect-video flex flex-col w-full h-full">
     <div class="flex w-full items-center">
         <span class="flex items-center gap-1">
             <MemoryStickIcon />

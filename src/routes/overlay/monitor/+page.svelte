@@ -10,16 +10,16 @@
 <Page>
     <main class="h-full max-h-screen overflow-auto flex flex-col gap-2">
         <div class="grid grid-cols-4 gap-2 w-full">
-            <Container class="p-4 aspect-video">
+            <Container class="">
                 <MainCpuMonitor />
             </Container>
-            <Container class="p-4 aspect-video">
+            <Container>
                 <MemoryChart />
             </Container>
-            <Container class="p-4 aspect-video">
+            <Container class="">
                 <NetworkChart />
             </Container>
-            <Container class="p-4 aspect-video">
+            <Container class="">
                 <DisksArc />
             </Container>
         </div>

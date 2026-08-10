@@ -4,12 +4,13 @@
     import Container from "$lib/components/reusable/Container.svelte";
     import ProjectStats from "$lib/components/overlay/ProjectStats.svelte";
     import RunningProjectsCards from "$lib/components/overlay/RunningProjectsCards.svelte";
+    import ProjectSystem from "$lib/components/overlay/ProjectSystem.svelte"
 
 </script>
 <Page>
     <main class="w-full h-full flex flex-col gap-2">
         <section class="flex-3 h-full w-full">
-            <Container class="w-full h-full">hello wrld</Container>
+            <ProjectSystem />
         </section>
         <div class="w-full h-fit gap-2 grid grid-cols-2">
             <Container class="grid-1 p-1">

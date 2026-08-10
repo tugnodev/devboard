@@ -36,8 +36,8 @@ pub async fn realtime_network_stats(app: AppHandle) {
             };
 
             let stats = NetworkStats {
-                bytes_received: interface.1.received(),
-                bytes_sent: interface.1.transmitted(),
+                bytes_received: interface.1.received() / 1024,
+                bytes_sent: interface.1.transmitted() / 1024,
                 timestamp: netdev::get_default_interface()
                     .unwrap()
                     .stats

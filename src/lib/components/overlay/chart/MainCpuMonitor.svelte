@@ -29,7 +29,7 @@ const domain: [number, number] = [0, 100];
 
 </script>
 
-<div class="flex flex-col justify-center w-full h-full items-center gap-2">
+<div class="p-4 aspect-video flex flex-col justify-center w-full h-full items-center gap-2">
     <div class="w-full flex items-center">
         <span class="flex items-center gap-1">
             <Cpu />

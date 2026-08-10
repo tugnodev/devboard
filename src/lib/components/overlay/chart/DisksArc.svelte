@@ -12,7 +12,7 @@
 	});
 </script>
 
-<section class="flex w-full flex-col gap-1 h-full aspect-video">
+<section class="p-4 flex w-full flex-col gap-1 h-full aspect-video">
     <div class="w-full">
         <span class="flex items-center gap-1">
             <HardDrive />

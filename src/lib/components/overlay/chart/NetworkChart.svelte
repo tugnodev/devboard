@@ -21,14 +21,9 @@
 		}, 1000);
 		return () => clearInterval(interval);
 	});
-
-	// Petite marge de tête au-dessus du max réel pour éviter que la ligne
-	// ne touche/déborde le bord supérieur du cadre, même avec une courbe monotone.
-	let sendMax = $derived(Math.max(1, ...data.map((d) => d.send)) * 1.15);
-	let receiveMax = $derived(Math.max(1, ...data.map((d) => d.receive)) * 1.15);
 </script>
 
-<section class="flex flex-col gap-2 items-center justify-center w-full h-full aspect-video overflow-hidden">
+<section class="p-4 flex flex-col gap-2 items-center justify-center w-full h-full aspect-video overflow-hidden">
 	<div class="w-full flex items-center">
 		<span class="flex items-center gap-1">
 			<Network />
@@ -41,9 +36,9 @@
 				{data}
 				x="time"
 				y="send"
-				yDomain={[0, sendMax]}
+				yDomain={[0, 10]}
 				y1="receive"
-				y1Domain={[0, receiveMax]}
+				y1Domain={[0, 10]}
 				padding={{ top: 25, left: 10, right: 10 }}
 				tooltipContext={{ mode: 'quadtree-x' }}
 			>
@@ -60,8 +55,8 @@
 						{#snippet children({ data })}
 							<Tooltip.Header>{data.time.toLocaleTimeString()}</Tooltip.Header>
 							<Tooltip.List>
-								<Tooltip.Item label="send" value="{data.send.toFixed(2)} Kb/s" />
-								<Tooltip.Item label="receive" value="{data.receive.toFixed(2)} Kb/s" />
+								<Tooltip.Item label="send" value="{data.send.toFixed(2)} MB/s" />
+								<Tooltip.Item label="receive" value="{data.receive.toFixed(2)} MB/s" />
 							</Tooltip.List>
 						{/snippet}
 					</Tooltip.Root>
@@ -71,11 +66,11 @@
 		<div class="flex w-full justify-between items-center">
 			<div class="flex items-center gap-1">
 				<span class="status status-primary animate-pulse"></span> Send
-				<p class="badge badge-primary rounded">{data[data.length - 1].send.toFixed(2)} Kb/s</p>
+				<p class="badge badge-primary rounded">{data[data.length - 1].send.toFixed(2)} MB/s</p>
 			</div>
 			<div class="flex items-center gap-1 flex-row-reverse">
 				<span class="status status-secondary animate-pulse"></span> Receive
-				<p class="badge badge-secondary rounded">{data[data.length - 1].receive.toFixed(2)} Kb/s</p>
+				<p class="badge badge-secondary rounded">{data[data.length - 1].receive.toFixed(2)} MB/s</p>
 			</div>
 		</div>
 	{:else}
