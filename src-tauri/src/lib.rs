@@ -28,7 +28,8 @@ pub fn run() {
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(move |_app, shortcut, event| {
-                    let ctrl_o_shortcut = Shortcut::new(Some(Modifiers::META), Code::KeyD);
+                    let ctrl_o_shortcut =
+                        Shortcut::new(Some(Modifiers::META | Modifiers::SHIFT), Code::KeyD);
                     if shortcut == &ctrl_o_shortcut {
                         match event.state() {
                             ShortcutState::Pressed => {
@@ -97,7 +98,7 @@ pub fn run() {
                 use tauri::menu::{Menu, MenuItem};
                 use tauri::tray::{TrayIconBuilder, TrayIconEvent};
 
-                let ctrl_o_shortcut = Shortcut::new(Some(Modifiers::META), Code::KeyD);
+                let ctrl_o_shortcut = Shortcut::new(Some(Modifiers::META), Code::KeyM);
 
                 app.global_shortcut().register(ctrl_o_shortcut)?;
 
