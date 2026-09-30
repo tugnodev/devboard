@@ -17,6 +17,48 @@ use types::EmitResponse;
 
 use crate::types::AppState;
 
+fn toggle_overlay(app: &tauri::AppHandle) {
+    let overlay = app.get_webview_window("overlay").unwrap();
+    let state = app.state::<Mutex<AppState>>();
+
+    if overlay.is_visible().unwrap_or(false) {
+        if let Ok(mut state) = state.lock() {
+            state.overlay_visible = false;
+            state.active = false;
+            let _ = app.emit(
+                "state-bridge",
+                EmitResponse {
+                    state_name: "overlay".to_string(),
+                    data: AppState {
+                        overlay_visible: state.overlay_visible,
+                        active: state.active,
+                        interval: state.interval,
+                    },
+                },
+            );
+        }
+        overlay.hide().unwrap();
+    } else {
+        overlay.show().unwrap();
+        overlay.set_focus().unwrap();
+        if let Ok(mut state) = state.lock() {
+            state.overlay_visible = true;
+            state.active = true;
+            let _ = app.emit(
+                "state-bridge",
+                EmitResponse {
+                    state_name: "overlay".to_string(),
+                    data: AppState {
+                        overlay_visible: state.overlay_visible,
+                        active: state.active,
+                        interval: state.interval,
+                    },
+                },
+            );
+        }
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -32,57 +74,8 @@ pub fn run() {
                 .with_handler(move |_app, shortcut, event| {
                     let ctrl_o_shortcut = Shortcut::new(Some(Modifiers::META), Code::KeyM);
                     if shortcut == &ctrl_o_shortcut {
-                        match event.state() {
-                            ShortcutState::Pressed => {
-                                println!("Meta-O Pressed!");
-                                let overlay = _app.get_webview_window("overlay").unwrap();
-                                let state = _app.state::<Mutex<AppState>>();
-                                match overlay.is_visible().unwrap_or(false) {
-                                    true => {
-                                        if let Ok(mut state) = state.lock() {
-                                            state.overlay_visible = false;
-                                            state.active = false;
-                                            let _ = _app.emit(
-                                                "state-bridge",
-                                                EmitResponse {
-                                                    state_name: "overlay".to_string(),
-                                                    data: AppState {
-                                                        overlay_visible: state.overlay_visible,
-                                                        active: state.active,
-                                                        interval: state.interval,
-                                                    },
-                                                },
-                                            );
-
-                                            std::thread::sleep(std::time::Duration::from_millis(
-                                                300,
-                                            ));
-                                            overlay.hide().unwrap();
-                                        }
-                                    }
-                                    false => {
-                                        overlay.show().unwrap();
-                                        if let Ok(mut state) = state.lock() {
-                                            state.overlay_visible = true;
-                                            state.active = true;
-                                            let _ = _app.emit(
-                                                "state-bridge",
-                                                EmitResponse {
-                                                    state_name: "overlay".to_string(),
-                                                    data: AppState {
-                                                        overlay_visible: state.overlay_visible,
-                                                        active: state.active,
-                                                        interval: state.interval,
-                                                    },
-                                                },
-                                            );
-                                        }
-                                    }
-                                };
-                            }
-                            ShortcutState::Released => {
-                                println!("Meta-D Released!");
-                            }
+                        if let ShortcutState::Pressed = event.state() {
+                            toggle_overlay(_app);
                         }
                     }
                 })
@@ -108,68 +101,37 @@ pub fn run() {
 
                 app.global_shortcut().register(ctrl_o_shortcut)?;
 
-                let toggle_item =
-                    MenuItem::with_id(app, "open", "Préférences", true, None::<&str>)?;
+                let settings_item =
+                    MenuItem::with_id(app, "settings", "Paramètres", true, None::<&str>)?;
                 let quit_item = MenuItem::with_id(app, "quit", "Quitter", true, None::<&str>)?;
 
-                let tray_menu = Menu::with_items(app, &[&toggle_item, &quit_item])?;
+                let tray_menu = Menu::with_items(app, &[&settings_item, &quit_item])?;
 
-                // 3. Construction du Tray Icon
                 let _tray = TrayIconBuilder::new()
-                    // Charge l'icône automatiquement depuis src-tauri/icons/icon.png (ou autre configuré)
                     .icon(app.default_window_icon().unwrap().clone())
                     .menu(&tray_menu)
                     .on_tray_icon_event(|tray_handle, event| {
                         let app = tray_handle.app_handle();
-                        if let Some(window) = app.get_webview_window("overlay") {
-                            match event {
-                                // Clic gauche direct sur l'icône -> On toggle la fenêtre
-                                TrayIconEvent::Click {
-                                    button: tauri::tray::MouseButton::Left,
-                                    ..
-                                } => {
-                                    if window.is_visible().unwrap_or(false) {
-                                        window.hide().unwrap();
-                                    } else {
-                                        window.show().unwrap();
-                                        window.set_focus().unwrap();
-                                    }
-                                }
-                                _ => {}
+                        match event {
+                            TrayIconEvent::Click {
+                                button: tauri::tray::MouseButton::Left,
+                                ..
+                            } => {
+                                toggle_overlay(&app);
                             }
+                            _ => {}
                         }
                     })
                     .on_menu_event(|app_handle, event| {
-                        // 4. Gestion des clics sur les éléments du menu
                         match event.id.as_ref() {
-                            "open" => {
-                                let webview = app_handle.get_webview_window("overlay");
-                                match webview {
-                                    Some(webview) => {
-                                        webview.show().unwrap();
-                                        webview.set_focus().unwrap();
-                                        println!("focus");
-                                    }
-                                    None => {
-                                        use tauri::WebviewWindow;
-
-                                        println!("closed");
-                                        let _webview = WebviewWindow::builder(
-                                            app_handle,
-                                            "main",
-                                            tauri::WebviewUrl::App("/".into()),
-                                        )
-                                        .inner_size(414.00, 896.00)
-                                        .build()
-                                        .unwrap();
-                                    }
+                            "settings" => {
+                                if let Some(main) = app_handle.get_webview_window("main") {
+                                    let _ = main.show();
+                                    let _ = main.set_focus();
                                 }
                             }
                             "quit" => {
-                                let webview = app_handle.get_webview_window("main");
-                                if let Some(webview) = webview {
-                                    webview.hide().unwrap();
-                                }
+                                app_handle.exit(0);
                             }
                             _ => {}
                         }
