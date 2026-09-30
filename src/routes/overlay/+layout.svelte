@@ -10,12 +10,7 @@
 
     onMount(() => {
       initTauriBridge();
-      // Démarrer le monitoring quand l'overlay est monté et visible
-      if ($appState.overlayVisible) {
-        startMonitoring();
-      }
       return () => {
-        // Arrêter le monitoring quand l'overlay est démonté
         stopMonitoring();
       };
     });

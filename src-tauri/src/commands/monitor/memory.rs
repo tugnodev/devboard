@@ -8,14 +8,14 @@ use crate::types::{AppState, EmitResponse};
 
 #[command]
 pub async fn realtime_memory_infos(app: AppHandle) {
-    tokio::task::spawn(async move {
+    tauri::async_runtime::spawn(async move {
         // Initialisation unique du singleton (si pas déjà fait)
         drop(lock_system());
 
         loop {
             let data = {
                 let mut guard = lock_system();
-                let sys = guard.as_mut().unwrap();
+                let Some(sys) = guard.as_mut() else { break };
                 sys.refresh_memory();
 
                 RealtimeMemoryData {
@@ -35,12 +35,7 @@ pub async fn realtime_memory_infos(app: AppHandle) {
             ) {
                 eprintln!("Erreur lors de l'émission des données : {:?}", e);
             }
-            if !app
-                .state::<Mutex<AppState>>()
-                .lock()
-                .unwrap()
-                .active
-            {
+            if !app.state::<Mutex<AppState>>().lock().unwrap().active {
                 break;
             }
             tokio::time::sleep(std::time::Duration::from_millis(1000)).await;

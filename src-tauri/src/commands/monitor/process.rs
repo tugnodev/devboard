@@ -8,24 +8,19 @@ use tauri::{command, AppHandle, Emitter, Manager};
 
 #[command]
 pub async fn realtime_process_infos(app: AppHandle) {
-    tokio::task::spawn(async move {
+    tauri::async_runtime::spawn(async move {
         // Initialisation unique du singleton (si pas déjà fait)
         drop(lock_system());
 
         loop {
-            if !app
-                .state::<Mutex<AppState>>()
-                .lock()
-                .unwrap()
-                .active
-            {
+            if !app.state::<Mutex<AppState>>().lock().unwrap().active {
                 break;
             }
 
-            let processes = {
-                let mut guard = lock_system();
-                let sys = guard.as_mut().unwrap();
-                sys.refresh_processes(ProcessesToUpdate::All, true);
+                let processes = {
+                    let mut guard = lock_system();
+                    let Some(sys) = guard.as_mut() else { break };
+                    sys.refresh_processes(ProcessesToUpdate::All, true);
 
                 let mut processes: Vec<Process> = sys
                     .processes()

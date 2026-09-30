@@ -17,7 +17,7 @@ pub struct NetworkStats {
 
 #[tauri::command]
 pub async fn realtime_network_stats(app: AppHandle) {
-    tokio::task::spawn(async move {
+    tauri::async_runtime::spawn(async move {
         let mut net = Networks::new_with_refreshed_list();
 
         loop {

@@ -9,14 +9,14 @@ use crate::types::{AppState, EmitResponse};
 
 #[command]
 pub async fn realtime_cpu_infos(app: AppHandle) {
-    tokio::task::spawn(async move {
+    tauri::async_runtime::spawn(async move {
         // Initialisation unique du singleton (si pas déjà fait)
         drop(lock_system());
 
         loop {
             let data = {
                 let mut guard = lock_system();
-                let sys = guard.as_mut().unwrap();
+                let Some(sys) = guard.as_mut() else { break };
                 sys.refresh_cpu_all();
 
                 let cpus = sys.cpus();
@@ -74,7 +74,16 @@ pub async fn realtime_cpu_infos(app: AppHandle) {
 #[command]
 pub fn get_cpu_infos() -> CpuInfos {
     let guard = lock_system();
-    let sys = guard.as_ref().unwrap();
+    let Some(sys) = guard.as_ref() else {
+        return CpuInfos {
+            brand: String::new(),
+            model: String::new(),
+            threads: 0,
+            max_frequency: 0,
+            virt: false,
+            arch: String::new(),
+        };
+    };
     let cpus = sys.cpus();
     let cpu_id = CpuId::new();
     let brand = cpu_id
