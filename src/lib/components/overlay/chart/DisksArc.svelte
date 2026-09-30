@@ -27,7 +27,7 @@
 	    class="w-full"
 	    key="mountPoint"
 	    value="usedSpaceMb"
-	    maxValue={disk.totalSpaceMb}
+	    maxValue={disk.totalSpaceMb || 1}
 	    range={[0, 360]}
 	    outerRadius={0}
 	    innerRadius={-10}

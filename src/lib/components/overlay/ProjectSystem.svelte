@@ -1,14 +1,9 @@
 <script lang="ts">
-    import { Folder, TerminalSquare, Code2, Plus, PlayIcon } from "@lucide/svelte";
+    import { Folder, Plus } from "@lucide/svelte";
     import Container from "../reusable/Container.svelte";
-    import { goto } from "$app/navigation";
-    type Project = {
-      name: string,
-      path: string,
-      langages: string[],
-      framework: string[],
-      tag: string[]
-    }
+    import type { Project } from "$lib/dtos/project";
+    import ProjectCard from "./ProjectCard.svelte";
+
     type Folders = {
       name: string,
       path: string
@@ -18,11 +13,11 @@
       color: string
     }
     const projects = $state<Project[]>([
-      {name: 'Project 1', path:'path/to/projects' ,langages : ['Java','TypeScript'], framework:["React"], tag:["frontend"]},
-      {name: 'Another Project', path:'path/to/another' ,langages  : ['Java','TypeScript'], framework:["Angular"], tag: []},
-      {name: 'Project 3', path:'path/to/projects' ,langages   : ['Java','Python'], framework:["Vue"], tag: ["Saas"]},
-      {name: 'Project 4', path:'path/to/projects' ,langages   : ['Java','Python'], framework:["Vue"], tag: ["backend"]},
-      {name: 'Project 5', path:'path/to/projects' ,langages   : ['Java','Python'], framework:["Vue"], tag: ["backend"]},
+      {id: '1', name: 'Project 1', path:'path/to/projects' ,languages : ['Java','TypeScript'], framework:["React"], tags:["frontend"]},
+      {id: '2', name: 'Another Project', path:'path/to/another' ,languages  : ['Java','TypeScript'], framework:["Angular"], tags: []},
+      {id: '3', name: 'Project 3', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["Saas"]},
+      {id: '4', name: 'Project 4', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["backend"]},
+      {id: '5', name: 'Project 5', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["backend"]},
     ]);
     const folders = $state<Folders[]>([
       { name: "Folder One", path: "path/to/folderone" },
@@ -33,18 +28,6 @@
       {title: "backend", color: "#fff"},
       {title: "Saas", color: "#fff"}
     ])
-
-    function openTerminal(project: Project) {
-      console.log("open terminal", project.path);
-    }
-    function openEditor(project: Project) {
-      console.log("open editor", project.path);
-    }
-
-    function tagColor(title: string) {
-      const found = tags.find(t => t.title === title);
-      return found?.color ?? "#888";
-    }
 </script>
 
 <section class="h-full w-full flex gap-2">
@@ -95,43 +78,11 @@
                 </button>
             </div>
 
-            <div class="flex gap-2 flex-wrap">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {#each projects as project}
-                    <div
-                        role="button"
-                        tabindex="0"
-                        aria-label="Open Project"
-                        onkeydown={() => alert("Go to project in" + project.path)}
-                        onclick={() => goto(`/overlay/projects/${project.name}`)}
-                        class="no-select group relative flex items-center justify-between w-64 gap-4 p-1 rounded border border-base-200 hover:border-base-300 hover:bg-base-200/40 transition-all duration-200">
-
-                        <div class="flex items-center gap-2 w-full">
-                            <span class="flex items-center justify-center w-16 h-16 rounded bg-base-200 shrink-0">
-                                <Folder class="text-base-content/50 w-full" />
-                            </span>
-
-                            <div class="flex flex-col w-full h-16 py-1 justify-between min-w-0 gap-1">
-                                <div class="flex items-center gap-2 justify-start">
-                                    <span class="no-select font-medium text-sm truncate">{project.name}</span>
-                                </div>
-                                <div class="flex items-center gap-1.5 text-xs text-base-content/40">
-                                    {#each project.tag as tag}
-                                        <span class="badge badge-sm badge-info badge-soft">{tag}</span>
-                                    {/each}
-                                </div>
-                            </div>
-                            <div class="w-16 h-16 flex items-center justify-end">
-                                <button class="btn btn-sm btn-square btn-ghost" >
-                                    <PlayIcon />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <ProjectCard {project} />
                 {/each}
             </div>
         </div>
-    </Container>
-    <Container class="w-full flex-1 h-full" >
-        <h1>Hello card</h1>
     </Container>
 </section>

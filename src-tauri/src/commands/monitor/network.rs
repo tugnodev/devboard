@@ -2,7 +2,7 @@ use std::{sync::Mutex, time::SystemTime};
 
 use netdev::{self};
 use serde::{Deserialize, Serialize};
-use sysinfo::{NetworkData, Networks};
+use sysinfo::Networks;
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::types::{AppState, EmitResponse};
@@ -23,27 +23,42 @@ pub async fn realtime_network_stats(app: AppHandle) {
         loop {
             net.refresh(true);
 
-            let interface: (&String, &NetworkData);
-            match netdev::get_default_interface() {
+            let stats = match netdev::get_default_interface() {
                 Ok(default) => {
-                    interface = net.list().get_key_value(&default.name).unwrap();
-                }
+                    let interface = net.list().get_key_value(&default.name);
+                    match interface {
+                        Some((_, data)) => {
+                            let timestamp = match netdev::get_default_interface() {
+                                Ok(iface) => match iface.stats {
+                                    Some(stats) => stats.timestamp.unwrap_or_else(SystemTime::now),
+                                    None => SystemTime::now(),
+                                },
+                                Err(_) => SystemTime::now(),
+                            };
 
+                            NetworkStats {
+                                bytes_received: data.received() / 1024,
+                                bytes_sent: data.transmitted() / 1024,
+                                timestamp,
+                            }
+                        }
+                        None => {
+                            eprintln!(
+                                "Interface réseau '{}' non trouvée dans sysinfo",
+                                default.name
+                            );
+                            tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                            continue;
+                        }
+                    }
+                }
                 Err(e) => {
-                    println!("{:?}", e);
+                    eprintln!(
+                        "Erreur lors de la récupération de l'interface par défaut : {:?}",
+                        e
+                    );
                     break;
                 }
-            };
-
-            let stats = NetworkStats {
-                bytes_received: interface.1.received() / 1024,
-                bytes_sent: interface.1.transmitted() / 1024,
-                timestamp: netdev::get_default_interface()
-                    .unwrap()
-                    .stats
-                    .unwrap()
-                    .timestamp
-                    .unwrap(),
             };
 
             if let Err(e) = app.emit::<EmitResponse<NetworkStats>>(
@@ -60,7 +75,7 @@ pub async fn realtime_network_stats(app: AppHandle) {
                 .state::<Mutex<AppState>>()
                 .lock()
                 .unwrap()
-                .overlay_visible
+                .active
             {
                 break;
             }

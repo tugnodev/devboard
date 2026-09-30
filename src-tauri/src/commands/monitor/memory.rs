@@ -1,24 +1,29 @@
 use std::sync::Mutex;
 
-use sysinfo::System;
 use tauri::{command, AppHandle, Emitter, Manager};
 
+use crate::commands::monitor::system::lock_system;
 use crate::types::device::RealtimeMemoryData;
 use crate::types::{AppState, EmitResponse};
 
 #[command]
 pub async fn realtime_memory_infos(app: AppHandle) {
     tokio::task::spawn(async move {
-        let mut sys = System::new_all();
+        // Initialisation unique du singleton (si pas déjà fait)
+        drop(lock_system());
 
         loop {
-            sys.refresh_memory();
+            let data = {
+                let mut guard = lock_system();
+                let sys = guard.as_mut().unwrap();
+                sys.refresh_memory();
 
-            let data = RealtimeMemoryData {
-                ram_usage: sys.used_memory(),
-                swap_usage: sys.used_swap(),
-                ram_capacity: sys.total_memory(),
-                swap_capacity: sys.total_swap(),
+                RealtimeMemoryData {
+                    ram_usage: sys.used_memory(),
+                    swap_usage: sys.used_swap(),
+                    ram_capacity: sys.total_memory(),
+                    swap_capacity: sys.total_swap(),
+                }
             };
 
             if let Err(e) = app.emit(
@@ -34,7 +39,7 @@ pub async fn realtime_memory_infos(app: AppHandle) {
                 .state::<Mutex<AppState>>()
                 .lock()
                 .unwrap()
-                .overlay_visible
+                .active
             {
                 break;
             }

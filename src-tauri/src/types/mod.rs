@@ -13,5 +13,6 @@ pub struct EmitResponse<T> {
 #[serde(rename_all = "camelCase")]
 pub struct AppState {
     pub overlay_visible: bool,
+    pub active: bool,
     pub interval: u64,
 }

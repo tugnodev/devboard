@@ -18,7 +18,7 @@
     	<Layer center>
     		<Arc
     			initialValue={0}
-    			value={($memState.ramUsage * 100) / $memState.ramCapacity}
+    			value={$memState.ramCapacity > 0 ? ($memState.ramUsage * 100) / $memState.ramCapacity : 0}
     			innerRadius={-20}
     			cornerRadius={10}
     			class="fill-warning"
@@ -27,7 +27,7 @@
     		/>
     		<Arc
     			initialValue={0}
-    			value={($memState.swapUsage * 100) / $memState.swapCapacity}
+    			value={$memState.swapCapacity > 0 ? ($memState.swapUsage * 100) / $memState.swapCapacity : 0}
     			outerRadius={-25}
     			innerRadius={-20}
     			cornerRadius={10}

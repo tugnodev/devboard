@@ -8,6 +8,7 @@ mod types;
 use commands::monitor::cpu::{get_cpu_infos, realtime_cpu_infos};
 use commands::monitor::disk::get_disks_infos;
 use commands::monitor::hide_overlay;
+use commands::monitor::stop_monitoring;
 use commands::monitor::memory::realtime_memory_infos;
 use commands::monitor::network::realtime_network_stats;
 use commands::monitor::process::realtime_process_infos;
@@ -22,14 +23,14 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .manage(Mutex::new(AppState {
             overlay_visible: false,
+            active: false,
             interval: 1000,
         }))
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(move |_app, shortcut, event| {
-                    let ctrl_o_shortcut =
-                        Shortcut::new(Some(Modifiers::META | Modifiers::SHIFT), Code::KeyD);
+                    let ctrl_o_shortcut = Shortcut::new(Some(Modifiers::META), Code::KeyM);
                     if shortcut == &ctrl_o_shortcut {
                         match event.state() {
                             ShortcutState::Pressed => {
@@ -40,12 +41,14 @@ pub fn run() {
                                     true => {
                                         if let Ok(mut state) = state.lock() {
                                             state.overlay_visible = false;
+                                            state.active = false;
                                             let _ = _app.emit(
                                                 "state-bridge",
                                                 EmitResponse {
                                                     state_name: "overlay".to_string(),
                                                     data: AppState {
                                                         overlay_visible: state.overlay_visible,
+                                                        active: state.active,
                                                         interval: state.interval,
                                                     },
                                                 },
@@ -61,12 +64,14 @@ pub fn run() {
                                         overlay.show().unwrap();
                                         if let Ok(mut state) = state.lock() {
                                             state.overlay_visible = true;
+                                            state.active = true;
                                             let _ = _app.emit(
                                                 "state-bridge",
                                                 EmitResponse {
                                                     state_name: "overlay".to_string(),
                                                     data: AppState {
                                                         overlay_visible: state.overlay_visible,
+                                                        active: state.active,
                                                         interval: state.interval,
                                                     },
                                                 },
@@ -88,6 +93,7 @@ pub fn run() {
             realtime_cpu_infos,
             realtime_memory_infos,
             hide_overlay,
+            stop_monitoring,
             realtime_network_stats,
             get_disks_infos,
             realtime_process_infos

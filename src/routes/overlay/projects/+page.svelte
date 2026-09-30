@@ -12,18 +12,14 @@
         <section class="flex-3 h-full w-full">
             <ProjectSystem />
         </section>
-        <div class="w-full h-fit gap-2 grid grid-cols-2">
-            <Container class="grid-1 p-1">
+        <div class="w-full h-fit gap-2 flex">
+            <Container class="p-1">
                 <ProjectStats
                   projectCount={12}
                   totalSizeBytes={2_400_000_000}
-                  maxSizeBytes={487_000_000}
-                  locations={['/home/user/projects/app-a', '/srv/data/legacy-proj']}
-                  lastScanDate={new Date()}
-                  scanDurationMs={842}
                 />
             </Container>
-            <Container class="h-full flex flex-col items-center gap-2 p-1">
+            <Container class="h-full w-full flex flex-col items-center gap-2 p-1">
                 <RunningProjectsCards
                   projects={[]}
                   maxRam={1024}

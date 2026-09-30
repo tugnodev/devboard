@@ -93,7 +93,7 @@
                             <td class="text-left whitespace-nowrap">
                                 <div class="text-sm">{service.enabledState}</div>
                                 <div class="text-[10px] text-base-content/50 font-mono">
-                                    config: <span class:text-error={service.loadState !== "loaded"}>{service.loadState}</span>
+                                    config: <span class={service.loadState !== "loaded" ? "text-error" : ""}>{service.loadState}</span>
                                 </div>
                             </td>
                             <td class="text-right font-mono text-sm">

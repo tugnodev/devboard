@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
     import { bounceOut, elasticIn, elasticOut, backIn, backOut } from "svelte/easing";
-    import { appState } from "$lib/states/appState";
+    import { appState, startMonitoring, stopMonitoring } from "$lib/states/appState";
     import TopBar from "$lib/components/overlay/TopBar.svelte";
     import { onMount } from "svelte";
     let { children } = $props();
@@ -10,6 +10,14 @@
 
     onMount(() => {
       initTauriBridge();
+      // Démarrer le monitoring quand l'overlay est monté et visible
+      if ($appState.overlayVisible) {
+        startMonitoring();
+      }
+      return () => {
+        // Arrêter le monitoring quand l'overlay est démonté
+        stopMonitoring();
+      };
     });
 </script>
 

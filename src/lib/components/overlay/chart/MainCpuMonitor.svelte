@@ -24,7 +24,8 @@ const domain: [number, number] = [0, 100];
 			{ label: 'Critical', class: 'fill-red-500' }
 		]);
 
-	const status = $derived(statusScale(Math.round($cpuState.globalUsage)));
+	const safeUsage = $derived(Number.isFinite($cpuState.globalUsage) ? $cpuState.globalUsage : 0);
+	const status = $derived(statusScale(Math.round(safeUsage)));
 
 
 </script>
@@ -44,7 +45,7 @@ const domain: [number, number] = [0, 100];
 						<ClipPath>
 							{#snippet clip()}
 								<Arc
-									value={Math.f16round($cpuState.globalUsage)}
+									value={Math.f16round(safeUsage)}
 									{domain}
 									range={angleRange}
 									{outerRadius}
@@ -105,7 +106,7 @@ const domain: [number, number] = [0, 100];
 
 				<!-- Value display -->
 				<Text
-					value={Math.round($cpuState.globalUsage) + '%'}
+					value={Math.round(safeUsage) + '%'}
 					textAnchor="middle"
 					verticalAnchor="middle"
 					class="text-4xl font-bold tabular-nums"
@@ -127,13 +128,13 @@ const domain: [number, number] = [0, 100];
         <div class="flex flex-col items-start gap-1">
             <p>Speed</p>
             <span class="badge rounded badge-warning">
-                {Math.fround($cpuState.globalFrequency / 1000).toFixed(2)} GHz
+                {Math.fround(($cpuState.globalFrequency || 0) / 1000).toFixed(2)} GHz
             </span>
         </div>
         <div class="flex flex-col items-end gap-1">
             <p>Max Speed</p>
             <span class="badge rounded badge-error">
-                {Math.fround($cpuInfosState.maxFrequency / 1000).toFixed(2)} GHz
+                {Math.fround(($cpuInfosState.maxFrequency || 0) / 1000).toFixed(2)} GHz
             </span>
         </div>
 	</div>

@@ -19,6 +19,15 @@ export type StatePayloads = {
   [StateName.process]: Process[];
 };
 
+// Helper pour mettre à jour l'état overlay depuis Rust
+function updateOverlayState(data: AppState) {
+  appState.update((current) => ({
+    ...current,
+    overlayVisible: data.overlayVisible,
+    active: data.active,
+  }));
+}
+
 export type EmitResponse<K extends StateName> = {
   stateName: K;
   data: StatePayloads[K];
@@ -33,7 +42,7 @@ export async function initTauriBridge() {
     switch (payload.stateName) {
       case StateName.overlay: {
         const data = payload.data as AppState;
-        appState.set(data);
+        updateOverlayState(data);
         break;
       }
       case StateName.cpu: {
@@ -54,11 +63,12 @@ export async function initTauriBridge() {
       }
       case StateName.network: {
         const data = payload.data as NetworkStats;
-        networkStats.subscribe((stats) => {
-          stats.send = data.bytesSent / Math.pow(1000, 1);
-          stats.receive = data.bytesReceived / Math.pow(1000, 1);
-          stats.time = new Date(data.timestamp.secs_since_epoch * 1000);
+        networkStats.set({
+          send: data.bytesSent / Math.pow(1000, 1),
+          receive: data.bytesReceived / Math.pow(1000, 1),
+          time: new Date(data.timestamp.secs_since_epoch * 1000),
         });
+        break;
       }
     }
   });

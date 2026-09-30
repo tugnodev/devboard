@@ -7,7 +7,16 @@ export const cpuState = writable<RealtimeCpuData>({
   threadFrequency: [0],
   threadUsage: [0]
 });
-export const cpuInfosState = writable<cpuInfos>();
+export const cpuInfosState = writable<cpuInfos>({
+  brand: '',
+  model: '',
+  cores: 0,
+  threads: 0,
+  frequency: 0,
+  maxFrequency: 0,
+  virt: false,
+  arch: ''
+});
 
 export const memState = writable<RealtimeMemoryData>({
   ramCapacity: 0,

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount, onDestroy } from "svelte";
+    import { appState, stopMonitoring } from "$lib/states/appState";
     import Page from "$lib/components/reusable/Page.svelte";
     import Container from "$lib/components/reusable/Container.svelte";
     import MainCpuMonitor from "$lib/components/overlay/chart/MainCpuMonitor.svelte";
@@ -6,6 +8,17 @@
     import NetworkChart from "$lib/components/overlay/chart/NetworkChart.svelte";
     import DisksArc from "$lib/components/overlay/chart/DisksArc.svelte";
     import Pagination from "$lib/components/overlay/Pagination.svelte";
+
+    onMount(() => {
+      // Marquer le monitoring comme actif
+      $appState.active = true;
+    });
+
+    onDestroy(() => {
+      // Arrêter le monitoring et libérer la mémoire
+      $appState.active = false;
+      stopMonitoring();
+    });
 </script>
 <Page>
     <main class="h-full max-h-screen overflow-auto flex flex-col gap-2">

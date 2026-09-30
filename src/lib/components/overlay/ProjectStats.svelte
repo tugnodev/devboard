@@ -5,23 +5,12 @@
    *
    * Props :
    * - projectCount    : nombre de projets détectés
-   * - maxSizeBytes    : taille (en octets) du plus gros projet
    * - totalSizeBytes  : taille cumulée de tous les projets (octets)
-   * - locations       : liste des chemins où les projets ont été trouvés
-   * - lastScanDate    : Date (ou timestamp) de la dernière analyse
-   * - scanDurationMs  : durée de la dernière analyse, en ms
    */
   let {
     projectCount = 0,
-    maxSizeBytes = 0,
     totalSizeBytes = 0,
-    locations = [],
-    lastScanDate = null,
-    scanDurationMs = null
   } = $props();
-
-  // Affichage/masquage de la liste des emplacements
-  let showLocations = $state(false);
 
   function formatBytes(bytes: number) {
     if (!bytes) return '0 B';
@@ -35,32 +24,7 @@
     return `${value.toFixed(i > 0 && value < 10 ? 1 : 0)} ${units[i]}`;
   }
 
-  function formatDuration(ms: number | null) {
-    if (ms == null) return '—';
-    if (ms < 1000) return `${ms} ms`;
-    return `${(ms / 1000).toFixed(1)} s`;
-  }
-
-  function formatRelativeTime(date: Date | number | string | null) {
-    if (!date) return 'jamais';
-    const d = date instanceof Date ? date : new Date(date);
-    const diffSec = Math.round((Date.now() - d.getTime()) / 1000);
-    if (diffSec < 60) return "à l'instant";
-    const diffMin = Math.round(diffSec / 60);
-    if (diffMin < 60) return `il y a ${diffMin} min`;
-    const diffH = Math.round(diffMin / 60);
-    if (diffH < 24) return `il y a ${diffH} h`;
-    const diffJ = Math.round(diffH / 24);
-    return `il y a ${diffJ} j`;
-  }
-
-  let maxSizeLabel = $derived(formatBytes(maxSizeBytes));
   let totalSizeLabel = $derived(formatBytes(totalSizeBytes));
-  let avgSizeLabel = $derived(
-    formatBytes(projectCount > 0 ? totalSizeBytes / projectCount : 0)
-  );
-  let lastScanLabel = $derived(formatRelativeTime(lastScanDate));
-  let scanDurationLabel = $derived(formatDuration(scanDurationMs));
 </script>
 
 <div class="stats stats-vertical lg:stats-horizontal shadow w-full overflow-x-auto">
@@ -86,26 +50,5 @@
     <div class="stat-title">Taille totale</div>
     <div class="stat-value text-accent">{totalSizeLabel}</div>
     <div class="stat-desc">tous projets confondus</div>
-  </div>
-
-  <!-- Taille moyenne -->
-  <div class="stat place-items-center">
-    <div class="stat-title">Taille moyenne</div>
-    <div class="stat-value">{avgSizeLabel}</div>
-    <div class="stat-desc">par projet</div>
-  </div>
-
-  <!-- Taille max -->
-  <div class="stat place-items-center">
-    <div class="stat-title">Taille max</div>
-    <div class="stat-value text-secondary">{maxSizeLabel}</div>
-    <div class="stat-desc">plus gros projet</div>
-  </div>
-
-  <!-- Dernière analyse -->
-  <div class="stat place-items-center">
-    <div class="stat-title">Dernière analyse</div>
-    <div class="stat-value text-sm">{lastScanLabel}</div>
-    <div class="stat-desc">durée : {scanDurationLabel}</div>
   </div>
 </div>
