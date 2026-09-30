@@ -8,10 +8,10 @@ mod types;
 use commands::monitor::cpu::{get_cpu_infos, realtime_cpu_infos};
 use commands::monitor::disk::get_disks_infos;
 use commands::monitor::hide_overlay;
-use commands::monitor::stop_monitoring;
 use commands::monitor::memory::realtime_memory_infos;
 use commands::monitor::network::realtime_network_stats;
 use commands::monitor::process::realtime_process_infos;
+use commands::monitor::stop_monitoring;
 
 use types::EmitResponse;
 
@@ -102,8 +102,8 @@ pub fn run() {
                 app.global_shortcut().register(ctrl_o_shortcut)?;
 
                 let settings_item =
-                    MenuItem::with_id(app, "settings", "Paramètres", true, None::<&str>)?;
-                let quit_item = MenuItem::with_id(app, "quit", "Quitter", true, None::<&str>)?;
+                    MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
+                let quit_item = MenuItem::with_id(app, "Exit", "Exit", true, None::<&str>)?;
 
                 let tray_menu = Menu::with_items(app, &[&settings_item, &quit_item])?;
 
@@ -122,19 +122,17 @@ pub fn run() {
                             _ => {}
                         }
                     })
-                    .on_menu_event(|app_handle, event| {
-                        match event.id.as_ref() {
-                            "settings" => {
-                                if let Some(main) = app_handle.get_webview_window("main") {
-                                    let _ = main.show();
-                                    let _ = main.set_focus();
-                                }
+                    .on_menu_event(|app_handle, event| match event.id.as_ref() {
+                        "settings" => {
+                            if let Some(main) = app_handle.get_webview_window("main") {
+                                let _ = main.show();
+                                let _ = main.set_focus();
                             }
-                            "quit" => {
-                                app_handle.exit(0);
-                            }
-                            _ => {}
                         }
+                        "quit" => {
+                            app_handle.exit(0);
+                        }
+                        _ => {}
                     })
                     .build(app)?;
             }
