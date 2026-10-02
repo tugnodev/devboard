@@ -1,18 +1,29 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
-    import { bounceOut, elasticIn, elasticOut, backIn, backOut } from "svelte/easing";
-    import { appState, startMonitoring, stopMonitoring } from "$lib/states/appState";
+    import { backIn, backOut } from "svelte/easing";
+    import { appState } from "$lib/states/AppState";
+    import { invoke } from "@tauri-apps/api/core";
     import TopBar from "$lib/components/overlay/TopBar.svelte";
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     let { children } = $props();
     import { initTauriBridge } from "$lib/services/bridge";
 
+    let cleanup: (() => void) | undefined;
 
     onMount(() => {
-      initTauriBridge();
-      return () => {
-        stopMonitoring();
-      };
+        appState.showOverlay();
+        appState.setActive(true);
+        invoke("start_monitoring");
+        initTauriBridge().then((unlisten) => {
+            cleanup = unlisten;
+        });
+    });
+
+    onDestroy(() => {
+        cleanup?.();
+        appState.setActive(false);
+        invoke("stop_monitoring");
+        appState.hideOverlay();
     });
 </script>
 
@@ -22,12 +33,12 @@
     aria-label="overlay"
     onkeydown={(e) => {
         if (e.key === "Escape") {
-            $appState.overlayVisible = false;
+            appState.hideOverlay();
         }
     }}
-    onclick={() => $appState.overlayVisible = false}
+    //onclick={() => appState.hideOverlay()}
     class="w-full h-screen max-h-screen">
-    {#if $appState.overlayVisible}
+    {#if appState.overlayVisible}
     <section class="flex flex-col h-full gap-2 p-2 w-full overflow-hidden">
         <header
             in:fly={{ y: -100, duration: 300, easing: backIn, delay: 50 }}

@@ -1,5 +1,11 @@
 import { listen } from '@tauri-apps/api/event';
-import { appState, type AppState } from '../states/appState';
+import { appState } from '../states/AppState';
+
+type AppState = {
+  overlayVisible: boolean;
+  active: boolean;
+  interval: number;
+};
 import { cpuState, memState, networkStats, processState } from '$lib/states/device';
 import type { RealtimeCpuData, RealtimeMemoryData, NetworkStats, Process } from '$lib/dtos/device';
 
@@ -20,12 +26,11 @@ export type StatePayloads = {
 };
 
 // Helper pour mettre à jour l'état overlay depuis Rust
+// Ne modifie PAS 'active' pour éviter la boucle avec le subscriber
 function updateOverlayState(data: AppState) {
-  appState.update((current) => ({
-    ...current,
-    overlayVisible: data.overlayVisible,
-    active: data.active,
-  }));
+  appState.updateFromRust({ overlayVisible: data.overlayVisible });
+  // On ne modifie pas 'active' ici pour éviter la boucle infinie
+  // 'active' est géré uniquement par startMonitoring/stopMonitoring
 }
 
 export type EmitResponse<K extends StateName> = {
@@ -47,6 +52,7 @@ export async function initTauriBridge() {
       }
       case StateName.cpu: {
         const data = payload.data as RealtimeCpuData;
+        console.log(data);
         cpuState.set(data);
         break;
       }
@@ -58,32 +64,17 @@ export async function initTauriBridge() {
       case StateName.process: {
         const data = payload.data as Process[];
         processState.set(data);
-        console.log(`taille des processus ${data.length}`)
-        break
+        break;
       }
       case StateName.network: {
         const data = payload.data as NetworkStats;
         networkStats.set({
           send: data.bytesSent / Math.pow(1000, 1),
           receive: data.bytesReceived / Math.pow(1000, 1),
-          time: new Date(data.timestamp.secs_since_epoch * 1000),
+          time: new Date(data.timestampSecs * 1000),
         });
         break;
       }
     }
   });
 }
-
-//export async function initTauriBridge2() {
-//  // Sécurité indispensable pour SvelteKit : on n'exécute que dans le navigateur
-//  if (typeof window === 'undefined') return;
-//  console.log('initTauriBridge2');
-//
-//  return await listen<EmitResponse<StateName>>('state-bridge2', (event) => {
-//    const payload = event.payload;
-//    console.log(payload);
-//    switch (payload.stateName) {
-//
-//    }
-//  });
-//}

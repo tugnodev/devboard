@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
-    import { appState, stopMonitoring } from "$lib/states/appState";
+    import { appState } from "$lib/states/AppState";
     import Page from "$lib/components/reusable/Page.svelte";
     import Container from "$lib/components/reusable/Container.svelte";
     import MainCpuMonitor from "$lib/components/overlay/chart/MainCpuMonitor.svelte";
@@ -8,16 +8,19 @@
     import NetworkChart from "$lib/components/overlay/chart/NetworkChart.svelte";
     import DisksArc from "$lib/components/overlay/chart/DisksArc.svelte";
     import Pagination from "$lib/components/overlay/Pagination.svelte";
+    import { initTauriBridge } from "$lib/services/bridge";
 
     onMount(() => {
       // Marquer le monitoring comme actif
-      $appState.active = true;
+      initTauriBridge();
+      appState.setActive(true);
+      console.log(appState.active);
     });
 
     onDestroy(() => {
       // Arrêter le monitoring et libérer la mémoire
-      $appState.active = false;
-      stopMonitoring();
+      appState.setActive(false);
+      console.log(appState.active);
     });
 </script>
 <Page>
