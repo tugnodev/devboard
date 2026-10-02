@@ -9,11 +9,14 @@
     import { initTauriBridge } from "$lib/services/bridge";
 
     let cleanup: (() => void) | undefined;
+    let monitoringStarted = false;
 
     onMount(() => {
+        if (monitoringStarted) return;
+        monitoringStarted = true;
         appState.showOverlay();
         appState.setActive(true);
-        invoke("start_monitoring");
+        invoke("start_monitoring").catch((err) => console.error("Failed to start monitoring:", err));
         initTauriBridge().then((unlisten) => {
             cleanup = unlisten;
         });
@@ -21,8 +24,10 @@
 
     onDestroy(() => {
         cleanup?.();
+        if (!monitoringStarted) return;
+        monitoringStarted = false;
         appState.setActive(false);
-        invoke("stop_monitoring");
+        invoke("stop_monitoring").catch((err) => console.error("Failed to stop monitoring:", err));
         appState.hideOverlay();
     });
 </script>
@@ -36,7 +41,7 @@
             appState.hideOverlay();
         }
     }}
-    //onclick={() => appState.hideOverlay()}
+    onclick={() => appState.hideOverlay()}
     class="w-full h-screen max-h-screen">
     {#if appState.overlayVisible}
     <section class="flex flex-col h-full gap-2 p-2 w-full overflow-hidden">

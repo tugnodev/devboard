@@ -1,11 +1,5 @@
 import { listen } from '@tauri-apps/api/event';
-import { appState } from '../states/AppState';
-
-type AppState = {
-  overlayVisible: boolean;
-  active: boolean;
-  interval: number;
-};
+import { appState, type AppStateData as AppState } from '../states/AppState';
 import { cpuState, memState, networkStats, processState } from '$lib/states/device';
 import type { RealtimeCpuData, RealtimeMemoryData, NetworkStats, Process } from '$lib/dtos/device';
 
@@ -52,7 +46,6 @@ export async function initTauriBridge() {
       }
       case StateName.cpu: {
         const data = payload.data as RealtimeCpuData;
-        console.log(data);
         cpuState.set(data);
         break;
       }

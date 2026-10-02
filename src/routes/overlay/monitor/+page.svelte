@@ -8,19 +8,14 @@
     import NetworkChart from "$lib/components/overlay/chart/NetworkChart.svelte";
     import DisksArc from "$lib/components/overlay/chart/DisksArc.svelte";
     import Pagination from "$lib/components/overlay/Pagination.svelte";
-    import { initTauriBridge } from "$lib/services/bridge";
-
     onMount(() => {
       // Marquer le monitoring comme actif
-      initTauriBridge();
       appState.setActive(true);
-      console.log(appState.active);
     });
 
     onDestroy(() => {
       // Arrêter le monitoring et libérer la mémoire
       appState.setActive(false);
-      console.log(appState.active);
     });
 </script>
 <Page>

@@ -1,4 +1,10 @@
-class AppState {
+export type AppStateData = {
+  overlayVisible: boolean;
+  active: boolean;
+  interval: number;
+};
+
+export class AppState {
   private _state = $state({
     overlayVisible: false,
     active: false,
@@ -12,7 +18,7 @@ class AppState {
   showOverlay() { this._state.overlayVisible = true; }
   hideOverlay() { this._state.overlayVisible = false; }
   setActive(active: boolean) { this._state.active = active; }
-  updateFromRust(data: { overlayVisible: boolean }) {
+  updateFromRust(data: Pick<AppStateData, 'overlayVisible'>) {
     this._state.overlayVisible = data.overlayVisible;
   }
 }
