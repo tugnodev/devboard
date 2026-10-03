@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { TerminalSquare } from "@lucide/svelte";
+	import { projectService } from "$lib/services/project/project.service";
 	import type { Project } from "$lib/dtos/project";
 
 	let { project }: { project: Project } = $props();
 
-	function handleOpenTerminal() {
-		console.log("Open in terminal:", project.path);
-		// TODO: invoke Tauri command to open terminal at project path
+	async function handleOpenTerminal() {
+		try {
+			await projectService.openInTerminal(project.path);
+		} catch (e) {
+			console.error("Failed to open in terminal:", e);
+		}
 	}
 </script>
 

@@ -5,7 +5,7 @@
     let route = page.url.pathname;
 </script>
 <Page>
-    <div class="w-full h-full min-h-full bg-red-500">
-        <h1 class="text-2xl" >{route}</h1>
+    <div class="w-full h-full bg-red-300 min-h-full flex items-center justify-center">
+        <h1 class="text-2xl">{route}</h1>
     </div>
 </Page>

@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { FolderOpen } from "@lucide/svelte";
+	import { projectService } from "$lib/services/project/project.service";
 	import type { Project } from "$lib/dtos/project";
 
 	let { project }: { project: Project } = $props();
 
-	function handleOpen() {
-		console.log("Open project:", project.path);
-		// TODO: invoke Tauri command to open project folder
+	async function handleOpen() {
+		try {
+			await projectService.openProject(project.path);
+		} catch (e) {
+			console.error("Failed to open project:", e);
+		}
 	}
 </script>
 

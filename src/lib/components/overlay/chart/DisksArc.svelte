@@ -35,5 +35,9 @@
 	    />
 	{/each}
         </section>
+    {:else}
+        <div class="flex h-full items-center justify-center text-sm text-neutral-500">
+            Aucun disque détecté.
+        </div>
     {/if}
 </section>

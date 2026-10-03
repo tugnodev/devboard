@@ -15,14 +15,14 @@
         <div class="w-full h-fit gap-2 flex">
             <Container class="p-1">
                 <ProjectStats
-                  projectCount={12}
-                  totalSizeBytes={2_400_000_000}
+                  projectCount={0}
+                  totalSizeBytes={0}
                 />
             </Container>
             <Container class="h-full w-full flex flex-col items-center gap-2 p-1">
                 <RunningProjectsCards
                   projects={[]}
-                  maxRam={1024}
+                  maxRam={0}
                 />
             </Container>
         </div>

@@ -33,7 +33,7 @@ export function slideFade(
 
 			return `
 				transform: ${transform} translate3d(${currentX}px, 0, 0) scale(${currentScale});
-				opacity: ${opacity * eased};
+			-opacity: ${opacity * eased};
 			`;
 		}
 	};

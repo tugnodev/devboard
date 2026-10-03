@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { Code2 } from "@lucide/svelte";
+	import { projectService } from "$lib/services/project/project.service";
 	import type { Project } from "$lib/dtos/project";
 
 	let { project }: { project: Project } = $props();
 
-	function handleOpenEditor() {
-		console.log("Open in editor:", project.path);
-		// TODO: invoke Tauri command to open project in editor
+	async function handleOpenEditor() {
+		try {
+			await projectService.openInEditor(project.path);
+		} catch (e) {
+			console.error("Failed to open in editor:", e);
+		}
 	}
 </script>
 

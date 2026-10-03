@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { blur, fly, slide, scale, fade } from "svelte/transition";
+    import { scale } from "svelte/transition";
     import type { Snippet } from "svelte";
     import { cn } from "$lib/utils/cn";
     import type { ClassNameValue } from "tailwind-merge";

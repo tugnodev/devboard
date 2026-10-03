@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { Trash2 } from "@lucide/svelte";
+	import { projectService } from "$lib/services/project/project.service";
 	import type { Project } from "$lib/dtos/project";
 
 	let { project }: { project: Project } = $props();
 
-	function handleDelete() {
-		console.log("Delete project:", project.path);
-		// TODO: invoke Tauri command to delete project
+	async function handleDelete() {
+		try {
+			await projectService.deleteProject(project.path);
+		} catch (e) {
+			console.error("Failed to delete project:", e);
+		}
 	}
 </script>
 

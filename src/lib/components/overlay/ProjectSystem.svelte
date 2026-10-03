@@ -12,22 +12,9 @@
       title: string,
       color: string
     }
-    const projects = $state<Project[]>([
-      {id: '1', name: 'Project 1', path:'path/to/projects' ,languages : ['Java','TypeScript'], framework:["React"], tags:["frontend"]},
-      {id: '2', name: 'Another Project', path:'path/to/another' ,languages  : ['Java','TypeScript'], framework:["Angular"], tags: []},
-      {id: '3', name: 'Project 3', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["Saas"]},
-      {id: '4', name: 'Project 4', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["backend"]},
-      {id: '5', name: 'Project 5', path:'path/to/projects' ,languages   : ['Java','Python'], framework:["Vue"], tags: ["backend"]},
-    ]);
-    const folders = $state<Folders[]>([
-      { name: "Folder One", path: "path/to/folderone" },
-      { name: "Folder Two", path: "path/to/folder/two" }
-    ])
-    const tags = $state<Tag[]>([
-      {title: "frontend", color: "#fff"},
-      {title: "backend", color: "#fff"},
-      {title: "Saas", color: "#fff"}
-    ])
+    const projects = $state<Project[]>([]);
+    const folders = $state<Folders[]>([]);
+    const tags = $state<Tag[]>([]);
 </script>
 
 <section class="h-full w-full flex gap-2">
@@ -81,6 +68,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {#each projects as project}
                     <ProjectCard {project} />
+                {:else}
+                    <div class="col-span-full flex items-center justify-center text-base-content/40 py-12">
+                        No projects yet. Create one to get started.
+                    </div>
                 {/each}
             </div>
         </div>

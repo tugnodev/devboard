@@ -1,8 +1,5 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api/core";
-    import { Webview } from "@tauri-apps/api/webview";
-    import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-    import { Window } from "@tauri-apps/api/window"
     import { onDestroy, onMount } from "svelte";
 
 </script>

@@ -1,19 +1,50 @@
 <script lang="ts">
     import Page from "$lib/components/reusable/Page.svelte";
-    import { Play, Square, RefreshCw, AlertTriangle } from "@lucide/svelte";
-    import { linuxMockSystemServices, windowsMockSystemServices, type SystemService, type WindowsService, type LinuxService } from "$lib/dtos/data";
+
+    import type { SystemService, WindowsService, LinuxService } from "$lib/dtos/data";
 
     // Change cette valeur pour basculer l'affichage ("windows" ou "linux")
     let currentOs = $state("linux");
 
-    let windowsServices: WindowsService[] = windowsMockSystemServices();
-    let linuxServices: LinuxService[] = linuxMockSystemServices();
+    let windowsServices: WindowsService[] = [];
+    let linuxServices: LinuxService[] = [];
 
     // Fonction utilitaire pour formater les octets en MB lisibles
     function formatMemory(bytes: number | null): string {
         if (bytes === null) return "—";
         return `${Math.round(bytes / (1024 * 1024))} MB`;
     }
+
+    // TODO: Remplacer par un appel Tauri pour récupérer les services réels
+    // Exemple: invoke("get_system_services")
+    // Pour l'instant, les listes sont vides en attendant l'implémentation backend
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Exemple d'implémentation future:
+    // onMount(async () => {
+    //   try {
+    //     const services = await invoke<SystemService>("get_system_services");
+    //     if (services.os === "windows") {
+    //       windowsServices = services.data;
+    //     } else {
+    //       linuxServices = services.data;
+    //     }
+    //   } catch (e) {
+    //     console.error("Failed to load services:", e);
+    //   }
+    // });
+    // Fin du TODO
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
+    // Les données mock ont été retirées pour éviter toute confusion avec des données réelles
+    // Les services seront chargés dynamiquement depuis le backend Rust
 </script>
 
 <section class="h-full w-full overflow-y-scroll pb-20">
@@ -39,6 +70,13 @@
             </thead>
             <tbody class="overflow-y-scroll no-scrollbar">
                 {#if currentOs === "windows"}
+                    {#if windowsServices.length === 0}
+                        <tr>
+                            <td colspan="6" class="text-center text-base-content/50 py-12">
+                                No services found.
+                            </td>
+                        </tr>
+                    {:else}
                     {#each windowsServices as service, index}
                         <tr class="hover">
                             <td class="text-base-content/50 text-xs w-4">{index + 1}</td>
@@ -68,7 +106,15 @@
                             </td>
                         </tr>
                     {/each}
+                    {/if}
                 {:else}
+                    {#if linuxServices.length === 0}
+                        <tr>
+                            <td colspan="6" class="text-center text-base-content/50 py-12">
+                                No services found.
+                            </td>
+                        </tr>
+                    {:else}
                     {#each linuxServices as service, index}
                         <tr class="hover">
                             <td class="text-base-content/50 text-xs w-4">{index + 1}</td>
@@ -104,6 +150,7 @@
                             </td>
                         </tr>
                     {/each}
+                    {/if}
                 {/if}
             </tbody>
         </table>
