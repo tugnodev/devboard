@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Chart, Highlight, Layer, Spline, Tooltip } from 'layerchart';
 	import { curveMonotoneX } from 'd3-shape';
 	import { Network } from '@lucide/svelte';
-	import { onMount } from 'svelte';
-	import { networkStats } from '$lib/states/device';
+	import { networkState } from '$lib/states/monitor/NetworkState';
 
 	type Point = { send: number; receive: number; time: Date };
 
@@ -11,7 +11,7 @@
 
 	onMount(() => {
 		const interval = setInterval(() => {
-			const stats = $networkStats;
+			const stats = networkState;
 			const point: Point = {
 				send: stats.send,
 				receive: stats.receive,

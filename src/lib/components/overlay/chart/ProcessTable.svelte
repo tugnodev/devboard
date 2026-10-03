@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Page from '$lib/components/reusable/Page.svelte';
-	import { processState } from '$lib/states/device';
+	import { processState } from '$lib/states/monitor/ProcessState';
 
 	const ROW_HEIGHT = 48; // px — doit correspondre à h-[48px] sur les <tr>
 	const OVERSCAN = 10;
@@ -9,7 +9,7 @@
 	let scrollTop = $state(0);
 	let containerHeight = $state(0);
 
-	let count = $derived($processState?.length ?? 0);
+	let count = $derived(processState.count);
 
 	// Bornes de la fenêtre visible (+ overscan)
 	let startIndex = $derived(
@@ -21,7 +21,7 @@
 	let endIndex = $derived(Math.min(count, startIndex + visibleCount));
 
 	let visibleItems = $derived(
-		($processState ?? []).slice(startIndex, endIndex)
+		processState.processes.slice(startIndex, endIndex)
 	);
 
 	let topSpacer = $derived(startIndex * ROW_HEIGHT);
@@ -45,9 +45,10 @@
 
 	function formatBytes(bytes: number, decimals = 1) {
 		if (bytes === 0) return '0 B';
+		if (bytes < 0 || !Number.isFinite(bytes)) return 'N/A';
 		const k = 1024;
 		const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
 	}
 
@@ -87,7 +88,7 @@
 				</thead>
 
 				<tbody>
-					{#if !$processState || $processState.length === 0}
+					{#if processState.count === 0}
 						<tr>
 							<td colspan="8" class="text-center text-base-content/50 py-12">
 								Aucun processus en cours d'exécution...

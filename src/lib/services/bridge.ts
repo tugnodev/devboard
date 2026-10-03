@@ -1,6 +1,9 @@
 import { listen } from '@tauri-apps/api/event';
 import { appState, type AppStateData as AppState } from '../states/AppState';
-import { cpuState, memState, networkStats, processState } from '$lib/states/device';
+import { cpuState } from '$lib/states/monitor/CpuState';
+import { memState } from '$lib/states/monitor/MemoryState';
+import { networkState } from '$lib/states/monitor/NetworkState';
+import { processState } from '$lib/states/monitor/ProcessState';
 import type { RealtimeCpuData, RealtimeMemoryData, NetworkStats, Process } from '$lib/dtos/device';
 
 export enum StateName {
@@ -46,26 +49,22 @@ export async function initTauriBridge() {
       }
       case StateName.cpu: {
         const data = payload.data as RealtimeCpuData;
-        cpuState.set(data);
+        cpuState.update(data);
         break;
       }
       case StateName.memory: {
         const data = payload.data as RealtimeMemoryData;
-        memState.set(data);
+        memState.update(data);
         break;
       }
       case StateName.process: {
         const data = payload.data as Process[];
-        processState.set(data);
+        processState.update(data);
         break;
       }
       case StateName.network: {
         const data = payload.data as NetworkStats;
-        networkStats.set({
-          send: data.bytesSent / Math.pow(1000, 1),
-          receive: data.bytesReceived / Math.pow(1000, 1),
-          time: new Date(data.timestampSecs * 1000),
-        });
+        networkState.update(data);
         break;
       }
     }

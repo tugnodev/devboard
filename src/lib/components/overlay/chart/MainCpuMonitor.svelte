@@ -2,8 +2,7 @@
 	import { Arc, Chart, ClipPath, Group, Layer, Line, LinearGradient, Text } from 'layerchart';
 	import { scaleLinear, scaleThreshold } from 'd3-scale';
     import { Cpu } from '@lucide/svelte';
-    import { cpuState, cpuInfosState } from '$lib/states/device';
-    import { onMount } from 'svelte';
+    import { cpuState } from '$lib/states/monitor/CpuState';
 
 
 	let outerRadius = 120;
@@ -24,7 +23,7 @@ const domain: [number, number] = [0, 100];
 			{ label: 'Critical', class: 'fill-red-500' }
 		]);
 
-	const safeUsage = $derived(Number.isFinite($cpuState.globalUsage) ? $cpuState.globalUsage : 0);
+	const safeUsage = $derived(Number.isFinite(cpuState.globalUsage) ? cpuState.globalUsage : 0);
 	const status = $derived(statusScale(Math.round(safeUsage)));
 
 
@@ -45,7 +44,7 @@ const domain: [number, number] = [0, 100];
 						<ClipPath>
 							{#snippet clip()}
 								<Arc
-									value={Math.f16round(safeUsage)}
+									value={Math.fround(safeUsage)}
 									{domain}
 									range={angleRange}
 									{outerRadius}
@@ -128,13 +127,13 @@ const domain: [number, number] = [0, 100];
         <div class="flex flex-col items-start gap-1">
             <p>Speed</p>
             <span class="badge rounded badge-warning">
-                {Math.fround(($cpuState.globalFrequency || 0) / 1000).toFixed(2)} GHz
+                {Math.fround((cpuState.globalFrequency || 0) / 1000).toFixed(2)} GHz
             </span>
         </div>
         <div class="flex flex-col items-end gap-1">
             <p>Max Speed</p>
             <span class="badge rounded badge-error">
-                {Math.fround(($cpuInfosState.maxFrequency || 0) / 1000).toFixed(2)} GHz
+                {Math.fround((cpuState.maxFrequency || 0) / 1000).toFixed(2)} GHz
             </span>
         </div>
 	</div>

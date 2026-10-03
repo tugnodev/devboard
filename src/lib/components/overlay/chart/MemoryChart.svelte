@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { cubicInOut } from 'svelte/easing';
-	import { Arc, Chart, Layer, Legend } from 'layerchart';
-    import { onDestroy } from 'svelte';
+	import { Arc, Chart, Layer } from 'layerchart';
     import { MemoryStickIcon } from '@lucide/svelte';
-    import { memState } from '$lib/states/device';
+    import { memState } from '$lib/states/monitor/MemoryState';
 
 </script>
 
@@ -18,7 +17,7 @@
     	<Layer center>
     		<Arc
     			initialValue={0}
-    			value={$memState.ramCapacity > 0 ? ($memState.ramUsage * 100) / $memState.ramCapacity : 0}
+    			value={memState.ramCapacity > 0 ? (memState.ramUsage * 100) / memState.ramCapacity : 0}
     			innerRadius={-20}
     			cornerRadius={10}
     			class="fill-warning"
@@ -27,7 +26,7 @@
     		/>
     		<Arc
     			initialValue={0}
-    			value={$memState.swapCapacity > 0 ? ($memState.swapUsage * 100) / $memState.swapCapacity : 0}
+    			value={memState.swapCapacity > 0 ? (memState.swapUsage * 100) / memState.swapCapacity : 0}
     			outerRadius={-25}
     			innerRadius={-20}
     			cornerRadius={10}
@@ -43,8 +42,8 @@
             <span class="flex gap-2 items-center">SWAP<div class="status status-success animate-pulse" ></div></span>
         </div>
         <div class="flex gap-2 items-center justify-between">
-            <span class="badge badge-warning p-1 rounded">{Math.fround(($memState.ramUsage) / Math.pow(1024, 3)).toFixed(2)} / {Math.fround($memState.ramCapacity / Math.pow(1024, 3)).toFixed(2)} GB</span>
-            <span class="badge badge-success p-1 rounded">{Math.fround(($memState.swapUsage) / Math.pow(1024, 3)).toFixed(2)} / {Math.fround($memState.swapCapacity / Math.pow(1024, 3)).toFixed(2)} GB</span>
+            <span class="badge badge-warning p-1 rounded">{Math.fround((memState.ramUsage) / Math.pow(1024, 3)).toFixed(2)} / {Math.fround(memState.ramCapacity / Math.pow(1024, 3)).toFixed(2)} GB</span>
+            <span class="badge badge-success p-1 rounded">{Math.fround((memState.swapUsage) / Math.pow(1024, 3)).toFixed(2)} / {Math.fround(memState.swapCapacity / Math.pow(1024, 3)).toFixed(2)} GB</span>
         </div>
     </div>
 </div>
