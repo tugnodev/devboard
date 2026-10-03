@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
     import { backIn, backOut } from "svelte/easing";
-    import { appState } from "$lib/states/AppState";
+    import { appState } from "$lib/states/AppState.svelte";
     import { monitorService } from "$lib/services/monitor/monitor.service";
     import { themeService } from "$lib/services/theme/theme.service";
     import TopBar from "$lib/components/overlay/TopBar.svelte";

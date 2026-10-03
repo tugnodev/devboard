@@ -1,9 +1,9 @@
 <script lang="ts">
     import Container from "$lib/components/reusable/Container.svelte";
     import { goto } from "$app/navigation";
-    import { routesState } from "$lib/states/RoutesState";
+    import { routesState } from "$lib/states/RoutesState.svelte";
     import { page } from "$app/state";
-    import { themeState } from "$lib/states/ThemeState";
+    import { themeState } from "$lib/states/ThemeState.svelte";
     import { themeService } from "$lib/services/theme/theme.service";
     import { Sun, Moon } from "@lucide/svelte";
 

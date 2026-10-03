@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Page from '$lib/components/reusable/Page.svelte';
-	import { processState } from '$lib/states/monitor/ProcessState';
+	import { processState } from '$lib/states/monitor/ProcessState.svelte';
 
 	const ROW_HEIGHT = 48; // px — doit correspondre à h-[48px] sur les <tr>
 	const OVERSCAN = 10;
@@ -102,7 +102,7 @@
 
 						<!-- Rendu des lignes visibles uniquement -->
 						{#each visibleItems as process, i (process.pid)}
-							<tr class="hover h-[48px]">
+							<tr class="hover h-12">
 								<td class="whitespace-nowrap text-xs text-base-content/50">
 									{startIndex + i + 1}
 								</td>

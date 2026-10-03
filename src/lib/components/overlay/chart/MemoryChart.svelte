@@ -2,7 +2,7 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { Arc, Chart, Layer } from 'layerchart';
     import { MemoryStickIcon } from '@lucide/svelte';
-    import { memState } from '$lib/states/monitor/MemoryState';
+    import { memState } from '$lib/states/monitor/MemoryState.svelte';
 
 </script>
 

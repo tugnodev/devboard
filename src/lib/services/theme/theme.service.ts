@@ -1,4 +1,4 @@
-import { themeState } from '$lib/states/ThemeState';
+import { themeState } from '$lib/states/ThemeState.svelte';
 import { tauriInvoke } from '$lib/services/tauri';
 
 class ThemeService {

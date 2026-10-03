@@ -3,7 +3,7 @@
 	import { Chart, Highlight, Layer, Spline, Tooltip } from 'layerchart';
 	import { curveMonotoneX } from 'd3-shape';
 	import { Network } from '@lucide/svelte';
-	import { networkState } from '$lib/states/monitor/NetworkState';
+	import { networkState } from '$lib/states/monitor/NetworkState.svelte';
 
 	type Point = { send: number; receive: number; time: Date };
 

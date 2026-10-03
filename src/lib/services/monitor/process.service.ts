@@ -1,4 +1,4 @@
-import { processState } from '$lib/states/monitor/ProcessState';
+import { processState } from '$lib/states/monitor/ProcessState.svelte';
 import { tauriInvoke } from '$lib/services/tauri';
 import type { Process } from '$lib/dtos/device';
 

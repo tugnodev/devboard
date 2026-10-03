@@ -2,7 +2,7 @@
 	import { Arc, Chart, ClipPath, Group, Layer, Line, LinearGradient, Text } from 'layerchart';
 	import { scaleLinear, scaleThreshold } from 'd3-scale';
     import { Cpu } from '@lucide/svelte';
-    import { cpuState } from '$lib/states/monitor/CpuState';
+    import { cpuState } from '$lib/states/monitor/CpuState.svelte';
 
 
 	let outerRadius = 120;

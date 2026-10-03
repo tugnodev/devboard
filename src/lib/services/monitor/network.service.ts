@@ -1,4 +1,4 @@
-import { networkState } from '$lib/states/monitor/NetworkState';
+import { networkState } from '$lib/states/monitor/NetworkState.svelte';
 import { tauriInvoke } from '$lib/services/tauri';
 import type { NetworkStats } from '$lib/dtos/device';
 

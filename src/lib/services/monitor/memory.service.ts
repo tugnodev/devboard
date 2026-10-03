@@ -1,4 +1,4 @@
-import { memState } from '$lib/states/monitor/MemoryState';
+import { memState } from '$lib/states/monitor/MemoryState.svelte';
 import { tauriInvoke } from '$lib/services/tauri';
 import type { RealtimeMemoryData } from '$lib/dtos/device';
 

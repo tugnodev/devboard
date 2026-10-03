@@ -1,4 +1,4 @@
-import { cpuState } from '$lib/states/monitor/CpuState';
+import { cpuState } from '$lib/states/monitor/CpuState.svelte';
 import { tauriInvoke } from '$lib/services/tauri';
 import type { RealtimeCpuData } from '$lib/dtos/device';
 

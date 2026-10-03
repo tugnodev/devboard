@@ -1,9 +1,9 @@
 import type { UnlistenFn } from '@tauri-apps/api/event';
-import { appState, type AppStateData } from '$lib/states/AppState';
-import { cpuState } from '$lib/states/monitor/CpuState';
-import { memState } from '$lib/states/monitor/MemoryState';
-import { networkState } from '$lib/states/monitor/NetworkState';
-import { processState } from '$lib/states/monitor/ProcessState';
+import { appState, type AppStateData } from '$lib/states/AppState.svelte';
+import { cpuState } from '$lib/states/monitor/CpuState.svelte';
+import { memState } from '$lib/states/monitor/MemoryState.svelte';
+import { networkState } from '$lib/states/monitor/NetworkState.svelte';
+import { processState } from '$lib/states/monitor/ProcessState.svelte';
 import { tauriInvoke, tauriListen } from '$lib/services/tauri';
 import type { RealtimeCpuData, RealtimeMemoryData, NetworkStats, Process } from '$lib/dtos/device';
 
