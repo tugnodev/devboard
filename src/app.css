@@ -5,6 +5,14 @@
     background-color: transparent;
 }
 
+:root[data-theme="light"] {
+    /* Thème clair */
+}
+
+:root[data-theme="dark"] {
+    /* Thème sombre */
+}
+
 @layer utilities {
     .no-scrollbar {
         scrollbar-width: none;
