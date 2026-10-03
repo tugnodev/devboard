@@ -28,26 +28,10 @@ export interface Disk {
     fileSystem: string;
 }
 
-export interface SystemTime {
-  secs_since_epoch: number;
-  nanos_since_epoch: number;
-}
-
 export interface NetworkStats {
   bytesSent: number,
   bytesReceived: number,
-  timestamp: SystemTime;
-}
-
-export interface cpuInfos {
-  brand: string;
-  model: string;
-  cores: number;
-  threads: number;
-  frequency: number;
-  maxFrequency: number;
-  virt: boolean;
-  arch: string;
+  timestampSecs: number;
 }
 
 export interface RealtimeCpuData {
@@ -55,6 +39,7 @@ export interface RealtimeCpuData {
   threadUsage: number[];
   globalFrequency: number;
   threadFrequency: number[];
+  maxFrequency: number,
 }
 
 export interface RealtimeMemoryData {
@@ -86,6 +71,15 @@ export interface diskInfos {
   removable: boolean;
 }
 
+export interface DiskInfo {
+  name: string;
+  mountPoint: string;
+  totalSpaceMb: number;
+  usedSpaceMb: number;
+  isRemovable: boolean;
+  fileSystem: string;
+}
+
 export interface networkInfos {
   manufacturer: string;
   interface: string;
@@ -94,16 +88,4 @@ export interface networkInfos {
   networkName: string;
   link: string;
   linkSpeed: number;
-}
-
-export interface Device {
-  brand: string;
-  model: string;
-  os: string;
-  version: string;
-  cpu: cpuInfos;
-  memory: memoryInfos;
-  network: networkInfos;
-  disk: diskInfos;
-  battery?: number;
 }

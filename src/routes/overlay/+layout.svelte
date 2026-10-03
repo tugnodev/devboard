@@ -2,32 +2,24 @@
     import { fly } from "svelte/transition";
     import { backIn, backOut } from "svelte/easing";
     import { appState } from "$lib/states/AppState";
-    import { invoke } from "@tauri-apps/api/core";
     import TopBar from "$lib/components/overlay/TopBar.svelte";
     import { onMount, onDestroy } from "svelte";
+    import { monitorService } from "$lib/services/monitor/monitor.service";
     let { children } = $props();
-    import { initTauriBridge } from "$lib/services/bridge";
 
-    let cleanup: (() => void) | undefined;
     let monitoringStarted = false;
 
     onMount(() => {
         if (monitoringStarted) return;
         monitoringStarted = true;
         appState.showOverlay();
-        appState.setActive(true);
-        invoke("start_monitoring").catch((err) => console.error("Failed to start monitoring:", err));
-        initTauriBridge().then((unlisten) => {
-            cleanup = unlisten;
-        });
+        monitorService.start().catch((err) => console.error("Failed to start monitoring:", err));
     });
 
     onDestroy(() => {
-        cleanup?.();
         if (!monitoringStarted) return;
         monitoringStarted = false;
-        appState.setActive(false);
-        invoke("stop_monitoring").catch((err) => console.error("Failed to stop monitoring:", err));
+        monitorService.stop().catch((err) => console.error("Failed to stop monitoring:", err));
         appState.hideOverlay();
     });
 </script>
