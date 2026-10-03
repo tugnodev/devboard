@@ -13,14 +13,15 @@ pub async fn realtime_process_infos(app: AppHandle) {
         drop(lock_system());
 
         loop {
-            if !app.state::<Mutex<AppState>>().lock().unwrap().active {
+            // Vérifier si le monitoring est toujours actif avant de continuer
+            if !app.state::<Mutex<AppState>>().lock().unwrap_or_else(|e| e.into_inner()).active {
                 break;
             }
 
-                let processes = {
-                    let mut guard = lock_system();
-                    let Some(sys) = guard.as_mut() else { break };
-                    sys.refresh_processes(ProcessesToUpdate::All, true);
+            let processes = {
+                let mut guard = lock_system();
+                let Some(sys) = guard.as_mut() else { break };
+                sys.refresh_processes(ProcessesToUpdate::All, true);
 
                 let mut processes: Vec<Process> = sys
                     .processes()

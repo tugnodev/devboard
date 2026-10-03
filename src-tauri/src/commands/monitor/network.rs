@@ -1,4 +1,4 @@
-use std::{sync::Mutex, time::SystemTime};
+use std::sync::Mutex;
 
 use netdev::{self};
 use serde::{Deserialize, Serialize};
@@ -12,7 +12,7 @@ use crate::types::{AppState, EmitResponse};
 pub struct NetworkStats {
     pub bytes_sent: u64,
     pub bytes_received: u64,
-    pub timestamp: SystemTime,
+    pub timestamp_secs: u64,
 }
 
 #[tauri::command]
@@ -21,6 +21,16 @@ pub async fn realtime_network_stats(app: AppHandle) {
         let mut net = Networks::new_with_refreshed_list();
 
         loop {
+            // Vérifier si le monitoring est toujours actif avant de continuer
+            if !app
+                .state::<Mutex<AppState>>()
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .active
+            {
+                break;
+            }
+
             net.refresh(true);
 
             let stats = match netdev::get_default_interface() {
@@ -28,18 +38,13 @@ pub async fn realtime_network_stats(app: AppHandle) {
                     let interface = net.list().get_key_value(&default.name);
                     match interface {
                         Some((_, data)) => {
-                            let timestamp = match netdev::get_default_interface() {
-                                Ok(iface) => match iface.stats {
-                                    Some(stats) => stats.timestamp.unwrap_or_else(SystemTime::now),
-                                    None => SystemTime::now(),
-                                },
-                                Err(_) => SystemTime::now(),
-                            };
-
                             NetworkStats {
                                 bytes_received: data.received() / 1024,
                                 bytes_sent: data.transmitted() / 1024,
-                                timestamp,
+                                timestamp_secs: std::time::SystemTime::now()
+                                    .duration_since(std::time::UNIX_EPOCH)
+                                    .map(|d| d.as_secs())
+                                    .unwrap_or(0),
                             }
                         }
                         None => {
@@ -69,15 +74,6 @@ pub async fn realtime_network_stats(app: AppHandle) {
                 },
             ) {
                 eprintln!("Erreur lors de l'émission des données : {:?}", e);
-            }
-
-            if !app
-                .state::<Mutex<AppState>>()
-                .lock()
-                .unwrap()
-                .active
-            {
-                break;
             }
             tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
         }

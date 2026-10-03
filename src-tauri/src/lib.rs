@@ -1,24 +1,27 @@
 use std::sync::Mutex;
 
+use tauri::image::Image;
 use tauri::Emitter;
 use tauri::Manager;
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 mod commands;
 mod types;
-use commands::monitor::cpu::{get_cpu_infos, realtime_cpu_infos};
+use commands::monitor::cpu::realtime_cpu_infos;
 use commands::monitor::disk::get_disks_infos;
 use commands::monitor::hide_overlay;
 use commands::monitor::memory::realtime_memory_infos;
 use commands::monitor::network::realtime_network_stats;
 use commands::monitor::process::realtime_process_infos;
-use commands::monitor::stop_monitoring;
+use commands::monitor::{start_monitoring, stop_monitoring};
 
 use types::EmitResponse;
 
 use crate::types::AppState;
 
 fn toggle_overlay(app: &tauri::AppHandle) {
-    let overlay = app.get_webview_window("overlay").unwrap();
+    let Some(overlay) = app.get_webview_window("overlay") else {
+        return;
+    };
     let state = app.state::<Mutex<AppState>>();
 
     if overlay.is_visible().unwrap_or(false) {
@@ -37,10 +40,10 @@ fn toggle_overlay(app: &tauri::AppHandle) {
                 },
             );
         }
-        overlay.hide().unwrap();
+        let _ = overlay.hide();
     } else {
-        overlay.show().unwrap();
-        overlay.set_focus().unwrap();
+        let _ = overlay.show();
+        let _ = overlay.set_focus();
         if let Ok(mut state) = state.lock() {
             state.overlay_visible = true;
             state.active = true;
@@ -82,11 +85,11 @@ pub fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            get_cpu_infos,
             realtime_cpu_infos,
             realtime_memory_infos,
             hide_overlay,
             stop_monitoring,
+            start_monitoring,
             realtime_network_stats,
             get_disks_infos,
             realtime_process_infos
@@ -101,14 +104,28 @@ pub fn run() {
 
                 app.global_shortcut().register(ctrl_o_shortcut)?;
 
+                // Afficher la fenêtre principale au démarrage
+                if let Some(main) = app.get_webview_window("main") {
+                    let _ = main.show();
+                    let _ = main.set_focus();
+                }
+
                 let settings_item =
                     MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
-                let quit_item = MenuItem::with_id(app, "Exit", "Exit", true, None::<&str>)?;
+                let quit_item = MenuItem::with_id(app, "quit", "Exit", true, None::<&str>)?;
 
                 let tray_menu = Menu::with_items(app, &[&settings_item, &quit_item])?;
 
                 let _tray = TrayIconBuilder::new()
-                    .icon(app.default_window_icon().unwrap().clone())
+                    .icon(
+                        app.default_window_icon()
+                            .cloned()
+                            .or_else(|| {
+                                // Fallback: 1x1 transparent pixel
+                                Some(Image::new_owned(vec![0, 0, 0, 0], 1, 1))
+                            })
+                            .expect("Failed to load tray icon"),
+                    )
                     .menu(&tray_menu)
                     .on_tray_icon_event(|tray_handle, event| {
                         let app = tray_handle.app_handle();

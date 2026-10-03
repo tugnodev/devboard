@@ -13,6 +13,11 @@ pub async fn realtime_memory_infos(app: AppHandle) {
         drop(lock_system());
 
         loop {
+            // Vérifier si le monitoring est toujours actif avant de continuer
+            if !app.state::<Mutex<AppState>>().lock().unwrap_or_else(|e| e.into_inner()).active {
+                break;
+            }
+
             let data = {
                 let mut guard = lock_system();
                 let Some(sys) = guard.as_mut() else { break };
@@ -34,9 +39,6 @@ pub async fn realtime_memory_infos(app: AppHandle) {
                 },
             ) {
                 eprintln!("Erreur lors de l'émission des données : {:?}", e);
-            }
-            if !app.state::<Mutex<AppState>>().lock().unwrap().active {
-                break;
             }
             tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
         }

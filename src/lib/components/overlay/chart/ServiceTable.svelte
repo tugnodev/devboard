@@ -1,13 +1,11 @@
 <script lang="ts">
     import Page from "$lib/components/reusable/Page.svelte";
 
-    import type { SystemService, WindowsService, LinuxService } from "$lib/dtos/data";
-
     // Change cette valeur pour basculer l'affichage ("windows" ou "linux")
     let currentOs = $state("linux");
 
-    let windowsServices: WindowsService[] = [];
-    let linuxServices: LinuxService[] = [];
+    let windowsServices: any[] = [];
+    let linuxServices: any[] = [];
 
     // Fonction utilitaire pour formater les octets en MB lisibles
     function formatMemory(bytes: number | null): string {

@@ -23,7 +23,7 @@ pub fn get_system() -> &'static Arc<Mutex<Option<System>>> {
 /// # Panics
 /// Panique si le mutex est empoisonné (un thread a paniqué en le détenant).
 pub fn lock_system() -> std::sync::MutexGuard<'static, Option<System>> {
-    get_system().lock().unwrap()
+    get_system().lock().unwrap_or_else(|e| e.into_inner())
 }
 
 /// Libère le singleton `System` pour récupérer la mémoire.
@@ -32,7 +32,7 @@ pub fn lock_system() -> std::sync::MutexGuard<'static, Option<System>> {
 pub fn shutdown_system() {
     if let Some(system) = SYSTEM.get() {
         if let Ok(mut guard) = system.lock() {
-            *guard = None;  // Drop le System, libérant la mémoire
+            *guard = None; // Drop le System, libérant la mémoire
         }
     }
 }

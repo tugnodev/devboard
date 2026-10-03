@@ -3,10 +3,15 @@ node_modules
 /build
 /.svelte-kit
 /package
+/src-tauri/target
 .env
 .env.*
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-bun.lock
 .vscode
+.opencode/
+AGENTS.md
+issues.md
+bun.lock
+graphify-out/

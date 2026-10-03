@@ -20,17 +20,6 @@ pub struct RealtimeMemoryData {
     pub swap_capacity: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CpuInfos {
-    pub brand: String,
-    pub model: String,
-    pub threads: u32,
-    pub max_frequency: u16,
-    pub virt: bool,
-    pub arch: String,
-}
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RealtimeCpuData {
@@ -38,6 +27,7 @@ pub struct RealtimeCpuData {
     pub thread_usage: Vec<f32>,
     pub global_frequency: f64,
     pub thread_frequency: Vec<u64>,
+    pub max_frequency: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
