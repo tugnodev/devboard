@@ -71,15 +71,6 @@ export interface diskInfos {
   removable: boolean;
 }
 
-export interface DiskInfo {
-  name: string;
-  mountPoint: string;
-  totalSpaceMb: number;
-  usedSpaceMb: number;
-  isRemovable: boolean;
-  fileSystem: string;
-}
-
 export interface networkInfos {
   manufacturer: string;
   interface: string;

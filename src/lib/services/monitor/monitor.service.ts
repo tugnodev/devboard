@@ -1,17 +1,38 @@
 import type { UnlistenFn } from '@tauri-apps/api/event';
-import { appState } from '$lib/states/AppState';
+import { appState, type AppStateData } from '$lib/states/AppState';
 import { cpuState } from '$lib/states/monitor/CpuState';
 import { memState } from '$lib/states/monitor/MemoryState';
 import { networkState } from '$lib/states/monitor/NetworkState';
 import { processState } from '$lib/states/monitor/ProcessState';
 import { tauriInvoke, tauriListen } from '$lib/services/tauri';
+import type { RealtimeCpuData, RealtimeMemoryData, NetworkStats, Process } from '$lib/dtos/device';
 
-type StateName = 'cpu' | 'memory' | 'network' | 'processes';
+type OverlayPayload = {
+  stateName: 'overlay';
+  data: Pick<AppStateData, 'overlayVisible'>;
+};
 
-interface StateBridgePayload {
-  stateName: StateName;
-  data: unknown;
-}
+type CpuPayload = {
+  stateName: 'cpu';
+  data: RealtimeCpuData;
+};
+
+type MemoryPayload = {
+  stateName: 'memory';
+  data: RealtimeMemoryData;
+};
+
+type NetworkPayload = {
+  stateName: 'network';
+  data: NetworkStats;
+};
+
+type ProcessesPayload = {
+  stateName: 'processes';
+  data: Process[];
+};
+
+type StateBridgePayload = OverlayPayload | CpuPayload | MemoryPayload | NetworkPayload | ProcessesPayload;
 
 class MonitorService {
   private unlisten: UnlistenFn | null = null;
@@ -44,18 +65,23 @@ class MonitorService {
 
   private handleStateUpdate(payload: StateBridgePayload) {
     switch (payload.stateName) {
+      case 'overlay':
+        appState.updateFromRust(payload.data);
+        break;
       case 'cpu':
-        cpuState.update(payload.data as Parameters<typeof cpuState.update>[0]);
+        cpuState.update(payload.data);
         break;
       case 'memory':
-        memState.update(payload.data as Parameters<typeof memState.update>[0]);
+        memState.update(payload.data);
         break;
       case 'network':
-        networkState.update(payload.data as Parameters<typeof networkState.update>[0]);
+        networkState.update(payload.data);
         break;
       case 'processes':
-        processState.update(payload.data as Parameters<typeof processState.update>[0]);
+        processState.update(payload.data);
         break;
+      default:
+        console.warn('Unknown state-bridge payload:', payload);
     }
   }
 }

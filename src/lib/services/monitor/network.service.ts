@@ -9,6 +9,8 @@ class NetworkService {
   }
 
   formatSpeed(kbps: number): string {
+    // Network speeds use decimal (1000) not binary (1024) — ISPs and network equipment
+    // advertise speeds in powers of 10 (1 kbps = 1000 bps, 1 Mbps = 1000 kbps)
     if (kbps >= 1000) return `${(kbps / 1000).toFixed(1)} MB/s`;
     return `${kbps} KB/s`;
   }

@@ -2,6 +2,8 @@ import { cpuState } from '$lib/states/monitor/CpuState';
 import { tauriInvoke } from '$lib/services/tauri';
 import type { RealtimeCpuData } from '$lib/dtos/device';
 
+type UsageLevel = 'error' | 'warning' | 'success';
+
 class CpuService {
   async getRealtimeData() {
     const data = await tauriInvoke<RealtimeCpuData>('realtime_cpu_infos');
@@ -13,10 +15,10 @@ class CpuService {
     return `${mhz} MHz`;
   }
 
-  getUsageColor(usage: number): string {
-    if (usage >= 90) return 'text-error';
-    if (usage >= 70) return 'text-warning';
-    return 'text-success';
+  getUsageColor(usage: number): UsageLevel {
+    if (usage >= 90) return 'error';
+    if (usage >= 70) return 'warning';
+    return 'success';
   }
 }
 

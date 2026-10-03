@@ -1,9 +1,9 @@
 import { tauriInvoke } from '$lib/services/tauri';
-import type { DiskInfo } from '$lib/dtos/device';
+import type { Disk } from '$lib/dtos/device';
 
 class DiskService {
   async getDisksInfos() {
-    return await tauriInvoke<DiskInfo[]>('get_disks_infos');
+    return await tauriInvoke<Disk[]>('get_disks_infos');
   }
 }
 

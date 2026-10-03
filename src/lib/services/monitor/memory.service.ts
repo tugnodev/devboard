@@ -17,7 +17,7 @@ class MemoryService {
       value /= 1024;
       i++;
     }
-    return `${value.toFixed(i > 0 && value < 10 ? 1 : 0)} ${units[i]}`;
+    return `${value.toFixed(i > 0 ? 1 : 0)} ${units[i]}`;
   }
 }
 
